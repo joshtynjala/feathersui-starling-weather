@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="feathers-weather" default="build" basedir=".">
+	
+	<!-- build.local.properties and sdk.local.proprties are optional files that
+		can be used to override the default properties. -->
+	<property file="./sdk.local.properties"/>
+	<property file="./sdk.properties"/>
+	<property file="./build.local.properties"/>
+	<property file="./build.properties"/>
+	
+	<fail unless="ios.provision.path"/>
+	<fail unless="ios.certificate.path"/>
+	<fail unless="ios.certificate.password"/>
+	
+	<fail unless="android.certificate.path"/>
+	<fail unless="android.certificate.password"/>
+
+	<fail unless="api.key"/>
+
+	<target name="build" depends="build-android,build-ios"/>
+
+	<target name="prepare">
+		<delete dir="${output.path}"/>
+	</target>
+
+	<target name="build-air-swf" depends="prepare">
+		<echo message="Building FeathersWeather.swf"/>
+		<java jar="${mxmlc}" dir="${basedir}" fork="true" failonerror="true">
+			<arg value="-load-config=${airmobile.config}"/>
+			<arg value="-swf-version=${swf.version}"/>
+			<arg value="--define+=CONFIG::API_KEY,'${api.key}'"/>
+			<arg value="-source-path+=source"/>
+			<arg value="-library-path+=${library.root}"/>
+			<arg value="source/FeathersWeather.as"/>
+			<arg value="-output=${output.path}/FeathersWeather.swf"/>
+		</java>
+	</target>
+	<target name="build-ios" depends="build-air-swf">
+		<echo message="Packaging FeathersWeather.ipa"/>
+		<java jar="${adt}" dir="${basedir}" fork="true" failonerror="true">
+			<arg value="-package"/>
+			<arg value="-target"/>
+			<arg value="ipa-app-store"/>
+			<arg value="-provisioning-profile"/>
+			<arg value="${ios.provision.path}"/>
+			<arg value="-keystore"/>
+			<arg value="${ios.certificate.path}"/>
+			<arg value="-storetype"/>
+			<arg value="pkcs12"/>
+			<arg value="-storepass"/>
+			<arg value="${ios.certificate.password}"/>
+			<arg value="${output.path}/FeathersWeather.ipa"/>
+			<arg value="source/FeathersWeather-app.xml"/>
+			<arg value="-C"/>
+			<arg value="${icon.path}"/>
+			<arg line="icon29.png icon48.png icon50.png icon57.png icon58.png icon72.png icon96.png icon100.png icon114.png icon128.png icon144.png"/>
+			<arg value="-C"/>
+			<arg value="${output.path}"/>
+			<arg value="FeathersWeather.swf"/>
+		</java>
+	</target>
+	<target name="build-android" depends="build-air-swf">
+		<echo message="Packaging FeathersWeather.apk"/>
+		<java jar="${adt}" dir="${basedir}" fork="true" failonerror="true">
+			<arg value="-package"/>
+			<arg value="-target"/>
+			<arg value="apk-captive-runtime"/>
+			<arg value="-storetype"/>
+			<arg value="pkcs12"/>
+			<arg value="-keystore"/>
+			<arg value="${android.certificate.path}"/>
+			<arg value="-storepass"/>
+			<arg value="${android.certificate.password}"/>
+			<arg value="${output.path}/FeathersWeather.apk"/>
+			<arg value="source/FeathersWeather-app.xml"/>
+			<arg value="-C"/>
+			<arg value="${icon.path}"/>
+			<arg line="icon29.png icon48.png icon50.png icon57.png icon58.png icon72.png icon96.png icon100.png icon114.png icon128.png icon144.png"/>
+			<arg value="-C"/>
+			<arg value="${output.path}"/>
+			<arg value="FeathersWeather.swf"/>
+		</java>
+	</target>
+</project>

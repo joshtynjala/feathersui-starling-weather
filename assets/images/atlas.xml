@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:98423eaec2b4d802053569295f0c4e1f$ -->
+<TextureAtlas imagePath="atlas.png">
+    <SubTexture name="menu" x="38" y="2" width="8" height="40"/>
+    <SubTexture name="plus" x="2" y="38" width="33" height="32"/>
+    <SubTexture name="search" x="2" y="2" width="34" height="34"/>
+    <SubTexture name="trash" x="2" y="72" width="31" height="34"/>
+</TextureAtlas>
