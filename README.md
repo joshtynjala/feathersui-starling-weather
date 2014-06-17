@@ -4,7 +4,7 @@ A mobile app for displaying weather forecasts built with [Starling Framework](ht
 
 ## Requirements
 
-The following libraries are required.
+The following libraries are required. They should be placed in a folder named `libraries`.
 
 * [Starling Framework 1.5.1](http://gamua.com/starling/)
 * [Feathers 1.3.0](http://feathersui.com/)
