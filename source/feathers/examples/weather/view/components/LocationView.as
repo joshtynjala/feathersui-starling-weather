@@ -330,7 +330,7 @@ package feathers.examples.weather.view.components
 				}
 				else
 				{
-					this._savedDelayedCall = Starling.juggler.delayCall(updateSearch, SEARCH_DELAY);
+					this._savedDelayedCall = Starling.juggler.delayCall(updateSearch, SEARCH_DELAY) as DelayedCall;
 				}
 			}
 		}
