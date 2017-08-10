@@ -6,6 +6,9 @@ package feathers.examples.weather
 	import feathers.examples.weather.model.FavoriteLocationsModel;
 	import feathers.examples.weather.model.ForecastModel;
 	import feathers.examples.weather.model.LocationSearchModel;
+	import feathers.examples.weather.services.DebugFavoriteLocationsServiceWithResults;
+	import feathers.examples.weather.services.DebugLocationSearchServiceWithResults;
+	import feathers.examples.weather.services.DebugWeatherServiceValid;
 	import feathers.examples.weather.services.IFavoriteLocationsService;
 	import feathers.examples.weather.services.ILocationSearchService;
 	import feathers.examples.weather.services.IWeatherService;
@@ -17,11 +20,11 @@ package feathers.examples.weather
 	import feathers.examples.weather.view.mediators.ForecastViewMediator;
 	import feathers.examples.weather.view.mediators.LocationViewMediator;
 	import feathers.examples.weather.view.mediators.MainMediator;
-	
+
 	import org.robotlegs.starling.base.ContextEventType;
 	import org.robotlegs.starling.core.IInjector;
 	import org.robotlegs.starling.mvcs.Context;
-	
+
 	import starling.display.DisplayObjectContainer;
 
 	public class FeathersWeatherContext extends Context
@@ -50,9 +53,18 @@ package feathers.examples.weather
 			this.injector.mapSingleton(FavoriteLocationsModel);
 			this.injector.mapSingleton(ForecastModel);
 			this.injector.mapSingleton(LocationSearchModel);
-			this.injector.mapSingletonOf(IWeatherService, ProductionWeatherService);
-			this.injector.mapSingletonOf(ILocationSearchService, ProductionLocationSearchService);
-			this.injector.mapSingletonOf(IFavoriteLocationsService, ProductionFavoriteLocationsService);
+			if(CONFIG::API_KEY == "mock")
+			{
+				this.injector.mapSingletonOf(IWeatherService, DebugWeatherServiceValid);
+				this.injector.mapSingletonOf(ILocationSearchService, DebugLocationSearchServiceWithResults);
+				this.injector.mapSingletonOf(IFavoriteLocationsService, DebugFavoriteLocationsServiceWithResults);
+			}
+			else //production
+			{
+				this.injector.mapSingletonOf(IWeatherService, ProductionWeatherService);
+				this.injector.mapSingletonOf(ILocationSearchService, ProductionLocationSearchService);
+				this.injector.mapSingletonOf(IFavoriteLocationsService, ProductionFavoriteLocationsService);
+			}
 
 			this.mediatorMap.mapView(ForecastView, ForecastViewMediator);
 			this.mediatorMap.mapView(LocationView, LocationViewMediator);
