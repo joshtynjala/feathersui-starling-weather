@@ -13,15 +13,23 @@ package feathers.examples.weather.view.components
 	import flash.text.engine.TextElement;
 
 	import starling.display.Quad;
+	import feathers.skins.IStyleProvider;
 
 	public class ForecastItemRenderer extends LayoutGroupListItemRenderer
 	{
+		public static var globalStyleProvider:IStyleProvider;
+
 		private static const CONDITION_CODE_UNAVAILABLE:int = 3200;
 
 		private static const DEGREES_SYMBOL:String = "°";
 
 		public function ForecastItemRenderer()
 		{
+		}
+
+		override protected function get defaultStyleProvider():IStyleProvider
+		{
+			return ForecastItemRenderer.globalStyleProvider;
 		}
 
 		private var _background:Quad;

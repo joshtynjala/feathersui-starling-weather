@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<application xmlns="http://ns.adobe.com/air/application/14.0">
+<application xmlns="http://ns.adobe.com/air/application/26.0">
 	<id>com.feathersui.examples.FeathersWeather</id>
 	<filename>Weather</filename>
 	<name>Weather</name>
 	<versionNumber>1.0.0</versionNumber>
 	<description>Weather example application built with Feathers UI controls and Robotlegs for Starling</description>
-	<copyright>2014 Josh Tynjala</copyright>
+	<copyright>2017 Josh Tynjala</copyright>
 
 	<initialWindow>
 		<content>FeathersWeather.swf</content>

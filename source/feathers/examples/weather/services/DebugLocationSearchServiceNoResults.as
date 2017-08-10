@@ -22,19 +22,19 @@ package feathers.examples.weather.services
 		[Inject]
 		public var locationSearchModel:LocationSearchModel;
 
-		private var _savedDelayedCall:DelayedCall;
+		private var _savedDelayedCallID:uint = uint.MAX_VALUE;
 
 		public function get isSearching():Boolean
 		{
-			return this._savedDelayedCall;
+			return this._savedDelayedCallID != uint.MAX_VALUE;
 		}
 
 		public function cancelSearch():void
 		{
-			if(this._savedDelayedCall)
+			if(this._savedDelayedCallID != uint.MAX_VALUE)
 			{
-				Starling.current.juggler.remove(this._savedDelayedCall);
-				this._savedDelayedCall = null;
+				Starling.juggler.removeByID(this._savedDelayedCallID);
+				this._savedDelayedCallID = uint.MAX_VALUE;
 			}
 		}
 
@@ -44,12 +44,12 @@ package feathers.examples.weather.services
 			{
 				throw new IllegalOperationError("Cannot search when a search is already active.")
 			}
-			this._savedDelayedCall = Starling.current.juggler.delayCall(locationsLoaded, 0.5);
+			this._savedDelayedCallID = Starling.juggler.delayCall(locationsLoaded, 0.5);
 		}
 
 		private function locationsLoaded():void
 		{
-			this._savedDelayedCall = null;
+			this._savedDelayedCallID = uint.MAX_VALUE;
 			try
 			{
 				this.locationSearchModel.replaceResultLocations(new <LocationItem>[]);

@@ -6,10 +6,14 @@ package feathers.examples.weather.view.components
 	import feathers.data.ListCollection;
 
 	import starling.events.Event;
+	import feathers.data.IListCollection;
+	import feathers.skins.IStyleProvider;
 
 	public class FavoriteLocationItemRenderer extends DefaultListItemRenderer
 	{
-		public static const CHILD_NAME_DELETE_BUTTON:String = "FeathersWeather-FavoriteLocationItem-DeleteButton";
+		public static var globalStyleProvider:IStyleProvider;
+
+		public static const CHILD_STYLE_NAME_DELETE_BUTTON:String = "FeathersWeather-FavoriteLocationItem-DeleteButton";
 
 		public static const EVENT_DELETE_LOCATION:String = "deleteLocation";
 
@@ -17,9 +21,14 @@ package feathers.examples.weather.view.components
 		{
 		}
 
+		override protected function get defaultStyleProvider():IStyleProvider
+		{
+			return FavoriteLocationItemRenderer.globalStyleProvider;
+		}
+
 		protected var deleteButton:Button;
 
-		protected var savedDataProvider:ListCollection;
+		protected var savedDataProvider:IListCollection;
 
 		override public function set owner(value:List):void
 		{
@@ -49,7 +58,7 @@ package feathers.examples.weather.view.components
 
 			this.itemHasAccessory = false;
 			this.deleteButton = new Button();
-			this.deleteButton.nameList.add(CHILD_NAME_DELETE_BUTTON);
+			this.deleteButton.styleNameList.add(CHILD_STYLE_NAME_DELETE_BUTTON);
 			this.deleteButton.addEventListener(Event.TRIGGERED, deleteButton_triggeredHandler);
 			this.replaceAccessory(this.deleteButton);
 		}

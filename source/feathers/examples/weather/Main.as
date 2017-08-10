@@ -7,6 +7,7 @@ package feathers.examples.weather
 
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import feathers.controls.DragGesture;
 
 	public class Main extends Sprite
 	{
@@ -39,7 +40,7 @@ package feathers.examples.weather
 			this._drawers.leftDrawer = new LocationView();
 			this._drawers.leftDrawerToggleEventType = ForecastView.EVENT_OPEN_MENU;
 
-			this._drawers.openGesture = Drawers.OPEN_GESTURE_DRAG_CONTENT_EDGE;
+			this._drawers.openGesture = DragGesture.EDGE;
 
 			this.addChild(this._drawers);
 		}

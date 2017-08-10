@@ -21,3 +21,5 @@ html-template/
 .idea/
 archive/
 *.lnk
+asconfig.json
+.vscode/

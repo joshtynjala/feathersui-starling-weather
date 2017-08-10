@@ -15,18 +15,22 @@ package feathers.examples.weather.view.components
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.events.Event;
+	import feathers.skins.IStyleProvider;
+	import feathers.examples.weather.view.components.LocationView;
 
 	[Event(name="change",type="starling.events.Event")]
 
 	public class LocationView extends PanelScreen
 	{
+		public static var globalStyleProvider:IStyleProvider;
+
 		public static const EVENT_SEARCH:String = "search";
 		public static const EVENT_DELETE_FAVORITE_LOCATION:String = "deleteFavoriteLocation";
 		public static const EVENT_SAVE_FAVORITE_LOCATION:String = "saveFavoriteLocation";
 
-		public static const CHILD_NAME_LIST:String = "FeathersWeather-LocationView-List";
+		public static const CHILD_STYLE_NAME_LIST:String = "FeathersWeather-LocationView-List";
 
-		public static const CHILD_NAME_STATUS_LABEL:String = "FeathersWeather-LocationView-StatusLabel";
+		public static const CHILD_STYLE_NAME_STATUS_LABEL:String = "FeathersWeather-LocationView-StatusLabel";
 
 		private static const SEARCH_DELAY:Number = 0.5;
 
@@ -35,6 +39,11 @@ package feathers.examples.weather.view.components
 		public function LocationView()
 		{
 			this.headerFactory = customHeaderFactory;
+		}
+
+		override protected function get defaultStyleProvider():IStyleProvider
+		{
+			return LocationView.globalStyleProvider;
 		}
 
 		private var _statusLabel:Label;
@@ -143,18 +152,18 @@ package feathers.examples.weather.view.components
 			super.initialize();
 
 			this._locationsList = new List();
-			this._locationsList.nameList.add(CHILD_NAME_LIST);
+			this._locationsList.styleNameList.add(CHILD_STYLE_NAME_LIST);
 			this._locationsList.addEventListener(Event.CHANGE, locationsList_changeHandler);
 			this._locationsList.addEventListener(FeathersEventType.RENDERER_ADD, locationsList_rendererAddHandler);
 			this._locationsList.addEventListener(FeathersEventType.RENDERER_REMOVE, locationsList_rendererRemoveHandler);
 			this.addChild(this._locationsList);
 
 			this._searchInput = new TextInput();
-			this._searchInput.nameList.add(TextInput.ALTERNATE_NAME_SEARCH_TEXT_INPUT);
+			this._searchInput.styleNameList.add(TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT);
 			this._searchInput.addEventListener(Event.CHANGE, searchInput_changeHandler);
 
 			this._statusLabel = new Label();
-			this._statusLabel.nameList.add(CHILD_NAME_STATUS_LABEL);
+			this._statusLabel.styleNameList.add(CHILD_STYLE_NAME_STATUS_LABEL);
 			this._statusLabel.visible = false;
 			this.addChild(this._statusLabel);
 

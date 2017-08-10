@@ -10,15 +10,18 @@ package feathers.examples.weather.view.components
 
 	import starling.display.DisplayObject;
 	import starling.events.Event;
+	import feathers.skins.IStyleProvider;
 
 	public class ForecastView extends Panel
 	{
+		public static var globalStyleProvider:IStyleProvider;
+
 		public static const EVENT_OPEN_MENU:String = "openMenu";
 
-		public static const CHILD_NAME_LIST:String = "FeathersWeather-ForecastView-List";
-		public static const CHILD_NAME_HEADER:String = "FeathersWeather-ForecastView-Header";
-		public static const CHILD_NAME_LOCATION_BUTTON:String = "FeathersWeather-ForecastView-LocationButton";
-		public static const CHILD_NAME_STATUS_LABEL:String = "FeathersWeather-ForecastView-StatusLabel";
+		public static const CHILD_STYLE_NAME_LIST:String = "FeathersWeather-ForecastView-List";
+		public static const CHILD_STYLE_NAME_HEADER:String = "FeathersWeather-ForecastView-Header";
+		public static const CHILD_STYLE_NAME_LOCATION_BUTTON:String = "FeathersWeather-ForecastView-LocationButton";
+		public static const CHILD_STYLE_NAME_STATUS_LABEL:String = "FeathersWeather-ForecastView-StatusLabel";
 
 		private static const LOADING_TITLE:String = "Forecasts";
 		private static const LOADING_MESSAGE:String = "Loading...";
@@ -27,7 +30,12 @@ package feathers.examples.weather.view.components
 		public function ForecastView()
 		{
 			this.headerFactory = customHeaderFactory;
-			this.customHeaderName = CHILD_NAME_HEADER;
+			this.customHeaderStyleName = CHILD_STYLE_NAME_HEADER;
+		}
+
+		override protected function get defaultStyleProvider():IStyleProvider
+		{
+			return ForecastView.globalStyleProvider;
 		}
 
 		private var _locationButton:Button;
@@ -92,23 +100,23 @@ package feathers.examples.weather.view.components
 
 			this._forecastList = new List();
 			this._forecastList.itemRendererType = ForecastItemRenderer;
-			this._forecastList.nameList.add(CHILD_NAME_LIST);
+			this._forecastList.styleNameList.add(CHILD_STYLE_NAME_LIST);
 			this._forecastList.isSelectable = false;
 			this.addChild(this._forecastList);
 
 			this._statusLabel = new Label();
-			this._statusLabel.nameList.add(CHILD_NAME_STATUS_LABEL);
+			this._statusLabel.styleNameList.add(CHILD_STYLE_NAME_STATUS_LABEL);
 			this._statusLabel.visible = false;
 			this.addChild(this._statusLabel);
 
 			//this will be added as a child of the header later
 			this._locationButton = new Button();
-			this._locationButton.nameList.add(CHILD_NAME_LOCATION_BUTTON);
+			this._locationButton.styleNameList.add(CHILD_STYLE_NAME_LOCATION_BUTTON);
 			this._locationButton.addEventListener(Event.TRIGGERED, locationButton_triggeredHandler);
 
 			//this will be added as a child of the header later
 			this._yahooLabel = new Label();
-			this._yahooLabel.nameList.add(Label.ALTERNATE_NAME_DETAIL);
+			this._yahooLabel.styleNameList.add(Label.ALTERNATE_STYLE_NAME_DETAIL);
 			this._yahooLabel.text = "Powered by Yahoo! Weather";
 		}
 

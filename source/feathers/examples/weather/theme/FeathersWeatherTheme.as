@@ -10,7 +10,6 @@ package feathers.examples.weather.theme
 	import feathers.controls.renderers.DefaultListItemRenderer;
 	import feathers.controls.text.StageTextTextEditor;
 	import feathers.controls.text.TextBlockTextRenderer;
-	import feathers.core.DisplayListWatcher;
 	import feathers.core.FeathersControl;
 	import feathers.core.ITextEditor;
 	import feathers.examples.weather.view.components.FavoriteLocationItemRenderer;
@@ -20,11 +19,8 @@ package feathers.examples.weather.theme
 	import feathers.layout.AnchorLayout;
 	import feathers.layout.AnchorLayoutData;
 	import feathers.layout.TiledRowsLayout;
-	import feathers.skins.SmartDisplayObjectStateValueSelector;
 	import feathers.system.DeviceCapabilities;
 
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.filters.DropShadowFilter;
 	import flash.text.engine.CFFHinting;
 	import flash.text.engine.ElementFormat;
@@ -38,8 +34,16 @@ package feathers.examples.weather.theme
 	import starling.display.Quad;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
+	import feathers.layout.RelativePosition;
+	import feathers.controls.ScrollPolicy;
+	import feathers.layout.HorizontalAlign;
+	import feathers.layout.VerticalAlign;
+	import feathers.controls.ButtonState;
+	import feathers.themes.StyleNameFunctionTheme;
+	import feathers.skins.ImageSkin;
+	import feathers.controls.ItemRendererLayoutOrder;
 
-	public class FeathersWeatherTheme extends DisplayListWatcher
+	public class FeathersWeatherTheme extends StyleNameFunctionTheme
 	{
 		[Embed(source="/../assets/images/atlas.png")]
 		private static const ATLAS_IMAGE:Class;
@@ -56,14 +60,11 @@ package feathers.examples.weather.theme
 		[Embed(source="/../assets/fonts/typicons.ttf",fontFamily="Typicons",fontWeight="normal",fontStyle="normal",embedAsCFF="true")]
 		private static const TYPICONS:Class;
 
-		private static const THEME_NAME_LOCATION_VIEW_HEADER:String = "FeathersWeatherTheme-LocationView-Header";
-		private static const THEME_NAME_LOCATION_LIST_ITEM_RENDERER:String = "FeathersWeatherTheme-LocationList-ItemRenderer";
+		private static const THEME_STYLE_NAME_LOCATION_VIEW_HEADER:String = "FeathersWeatherTheme-LocationView-Header";
+		private static const THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER:String = "FeathersWeatherTheme-LocationList-ItemRenderer";
 
 		private static const TEXT_FONT_NAME:String = "MuseoSans";
 		private static const ICON_FONT_NAME:String = "Typicons";
-
-		private static const ORIGINAL_DPI_IPHONE_RETINA:int = 326;
-		private static const ORIGINAL_DPI_IPAD_RETINA:int = 264;
 
 		private static const BACKGROUND_COLOR:uint = 0x4d545e;
 		private static const DRAWER_BACKGROUND_COLOR:uint = 0x656d78;
@@ -252,28 +253,24 @@ package feathers.examples.weather.theme
 			STORM_ICON
 		];
 
-
 		public function FeathersWeatherTheme()
 		{
-			super(Starling.current.stage);
+			super();
 			this.initialize();
 		}
 
-		private var _originalDPI:int;
-		private var _scale:Number;
+		private var _gridSize:Number = 48;
+		private var _threeQuarterGridSize:Number = 36;
+		private var _halfGridSize:Number = 24;
+		private var _quarterGridSize:Number = 12;
+		private var _eighthGridSize:Number = 6;
+		private var _sixteenthGridSize:Number = 3;
+		private var _oneAndAHalfGridSize:Number = 72;
 
-		private var _gridSize:Number;
-		private var _threeQuarterGridSize:Number;
-		private var _halfGridSize:Number;
-		private var _quarterGridSize:Number;
-		private var _eighthGridSize:Number;
-		private var _sixteenthGridSize:Number;
-		private var _oneAndAHalfGridSize:Number;
-
-		private var _tempuratureFontSize:Number;
-		private var _headerFontSize:Number;
-		private var _normalFontSize:Number;
-		private var _detailFontSize:Number;
+		private var _tempuratureFontSize:Number = 50;
+		private var _headerFontSize:Number = 18;
+		private var _normalFontSize:Number = 15;
+		private var _detailFontSize:Number = 12;
 
 		private var defaultElementFormat:ElementFormat;
 		private var headerElementFormat:ElementFormat;
@@ -281,9 +278,6 @@ package feathers.examples.weather.theme
 		private var detailElementFormat:ElementFormat;
 		private var textItalicFontDescription:FontDescription;
 		private var largeIconElementFormat:ElementFormat;
-
-		private var itemRendererSkinSelector:SmartDisplayObjectStateValueSelector;
-		private var quietButtonSkinSelector:SmartDisplayObjectStateValueSelector;
 
 		private var _iconsAtlas:TextureAtlas;
 
@@ -294,42 +288,14 @@ package feathers.examples.weather.theme
 
 		private function initialize():void
 		{
-			this.initializeScale();
 			this.initializeFonts();
 			this.initializeTextures();
-			this.initializeSkinSelectors();
 			this.initializeGlobals();
-			this.setInitializers();
-		}
-
-		private function initializeScale():void
-		{
-			var scaledDPI:int = DeviceCapabilities.dpi / Starling.contentScaleFactor;
-			if(DeviceCapabilities.isTablet(Starling.current.nativeStage))
-			{
-				this._originalDPI = ORIGINAL_DPI_IPAD_RETINA;
-			}
-			else
-			{
-				this._originalDPI = ORIGINAL_DPI_IPHONE_RETINA;
-			}
-			this._scale = scaledDPI / this._originalDPI;
-
-			this._gridSize = 96 * this._scale;
-			this._threeQuarterGridSize = 72 * this._scale;
-			this._halfGridSize = 48 * this._scale;
-			this._quarterGridSize = 24 * this._scale;
-			this._eighthGridSize = 12 * this._scale;
-			this._sixteenthGridSize = 6 * this._scale;
-			this._oneAndAHalfGridSize = 144 * this._scale;
+			this.initializeStyleProviders();
 		}
 
 		private function initializeFonts():void
 		{
-			this._normalFontSize = 30 * this._scale;
-			this._headerFontSize = 36 * this._scale;
-			this._detailFontSize = 24 * this._scale;
-			this._tempuratureFontSize = 100 * this._scale;
 			var textFontDescription:FontDescription = new FontDescription(TEXT_FONT_NAME, FontWeight.NORMAL, FontPosture.NORMAL, FontLookup.EMBEDDED_CFF, RenderingMode.CFF, CFFHinting.NONE);
 			this.textItalicFontDescription = new FontDescription(TEXT_FONT_NAME, FontWeight.NORMAL, FontPosture.ITALIC, FontLookup.EMBEDDED_CFF, RenderingMode.CFF, CFFHinting.NONE);
 			var iconFontDescription:FontDescription = new FontDescription(ICON_FONT_NAME, FontWeight.NORMAL, FontPosture.NORMAL, FontLookup.EMBEDDED_CFF, RenderingMode.CFF, CFFHinting.NONE);
@@ -343,11 +309,7 @@ package feathers.examples.weather.theme
 
 		private function initializeTextures():void
 		{
-			var bitmap:Bitmap = Bitmap(new ATLAS_IMAGE());
-			var bitmapData:BitmapData = bitmap.bitmapData;
-			var atlasTexture:Texture = Texture.fromBitmapData(bitmapData, false);
-			bitmapData.dispose();
-			atlasTexture.root.onRestore = atlas_onRestore;
+			var atlasTexture:Texture = Texture.fromEmbeddedAsset(ATLAS_IMAGE, false, false, 2);
 			this._iconsAtlas = new TextureAtlas(atlasTexture, XML(new ATLAS_XML()));
 
 			this.deleteIconTexture = this._iconsAtlas.getTexture("trash");
@@ -356,124 +318,92 @@ package feathers.examples.weather.theme
 			this.menuIconTexture = this._iconsAtlas.getTexture("menu");
 		}
 
-		private function initializeSkinSelectors():void
-		{
-			this.itemRendererSkinSelector = new SmartDisplayObjectStateValueSelector();
-			this.itemRendererSkinSelector.defaultValue = DRAWER_BACKGROUND_COLOR;
-			this.itemRendererSkinSelector.defaultSelectedValue = SELECTION_COLOR;
-			this.itemRendererSkinSelector.setValueForState(SELECTION_COLOR, Button.STATE_DOWN, false);
-			this.itemRendererSkinSelector.displayObjectProperties =
-			{
-				width: this._gridSize,
-				height: this._gridSize
-			};
-
-			this.quietButtonSkinSelector = new SmartDisplayObjectStateValueSelector();
-			this.quietButtonSkinSelector.defaultValue = BACKGROUND_COLOR;
-			this.quietButtonSkinSelector.setValueForState(SELECTION_COLOR, Button.STATE_DOWN, false);
-			this.quietButtonSkinSelector.displayObjectProperties =
-			{
-				width: this._gridSize,
-				height: this._gridSize
-			};
-		}
-
 		private function initializeGlobals():void
 		{
 			FeathersControl.defaultTextRendererFactory = this.defaultTextRendererFactory;
 			FeathersControl.defaultTextEditorFactory = this.textEditorFactory;
 		}
 
-		private function setInitializers():void
+		private function initializeStyleProviders():void
 		{
 			//panel
-			this.setInitializerForClass(Header, panelHeaderInitializer, Panel.DEFAULT_CHILD_NAME_HEADER);
+			this.getStyleProviderForClass(Header).setFunctionForStyleName(Panel.DEFAULT_CHILD_STYLE_NAME_HEADER, panelHeaderInitializer);
 
 			//text input
-			this.setInitializerForClass(TextInput, searchInputInitializer, TextInput.ALTERNATE_NAME_SEARCH_TEXT_INPUT);
+			this.getStyleProviderForClass(TextInput).setFunctionForStyleName(TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT, searchInputInitializer);
 
 			//label
-			this.setInitializerForClass(Label, detailLabelInitializer, Label.ALTERNATE_NAME_DETAIL);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName(Label.ALTERNATE_STYLE_NAME_DETAIL, detailLabelInitializer);
 
 			//location view
-			this.setInitializerForClass(LocationView, locationViewInitializer);
-			this.setInitializerForClass(Header, locationViewHeaderInitializer, THEME_NAME_LOCATION_VIEW_HEADER);
-			this.setInitializerForClass(List, locationViewListInitializer, LocationView.CHILD_NAME_LIST);
-			this.setInitializerForClass(Label, locationViewStatusLabelInitializer, LocationView.CHILD_NAME_STATUS_LABEL);
-			this.setInitializerForClass(FavoriteLocationItemRenderer, favoriteLocationItemRendererInitializer);
-			this.setInitializerForClass(Button, deleteButtonInitializer, FavoriteLocationItemRenderer.CHILD_NAME_DELETE_BUTTON);
-			this.setInitializerForClass(DefaultListItemRenderer, searchResultLocationItemRendererInitializer, THEME_NAME_LOCATION_LIST_ITEM_RENDERER);
+			this.getStyleProviderForClass(LocationView).defaultStyleFunction = locationViewInitializer;
+			this.getStyleProviderForClass(Header).setFunctionForStyleName(THEME_STYLE_NAME_LOCATION_VIEW_HEADER, locationViewHeaderInitializer);
+			this.getStyleProviderForClass(List).setFunctionForStyleName(LocationView.CHILD_STYLE_NAME_LIST, locationViewListInitializer);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName(LocationView.CHILD_STYLE_NAME_STATUS_LABEL, locationViewStatusLabelInitializer);
+			this.getStyleProviderForClass(FavoriteLocationItemRenderer).defaultStyleFunction = favoriteLocationItemRendererInitializer;
+			this.getStyleProviderForClass(Button).setFunctionForStyleName(FavoriteLocationItemRenderer.CHILD_STYLE_NAME_DELETE_BUTTON, deleteButtonInitializer);
+			this.getStyleProviderForClass(DefaultListItemRenderer).setFunctionForStyleName(THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER, searchResultLocationItemRendererInitializer);
 
 			//forecast view
-			this.setInitializerForClass(ForecastView, forecastViewInitializer);
-			this.setInitializerForClass(Header, forecastViewHeaderInitializer, ForecastView.CHILD_NAME_HEADER);
-			this.setInitializerForClass(List, forecastViewListInitializer, ForecastView.CHILD_NAME_LIST);
-			this.setInitializerForClass(Button, forecastViewLocationButtonInitializer, ForecastView.CHILD_NAME_LOCATION_BUTTON);
-			this.setInitializerForClass(Label, forecastViewStatusLabelInitializer, ForecastView.CHILD_NAME_STATUS_LABEL);
-			this.setInitializerForClass(ForecastItemRenderer, forecastItemRendererInitializer);
-		}
-
-		private function atlas_onRestore():void
-		{
-			var bitmap:Bitmap = Bitmap(new ATLAS_IMAGE());
-			var bitmapData:BitmapData = bitmap.bitmapData;
-			this._iconsAtlas.texture.root.uploadBitmapData(bitmapData);
-			bitmapData.dispose();
+			this.getStyleProviderForClass(ForecastView).defaultStyleFunction = forecastViewInitializer;
+			this.getStyleProviderForClass(Header).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_HEADER, forecastViewHeaderInitializer);
+			this.getStyleProviderForClass(List).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_LIST, forecastViewListInitializer);
+			this.getStyleProviderForClass(Button).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_LOCATION_BUTTON, forecastViewLocationButtonInitializer);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_STATUS_LABEL, forecastViewStatusLabelInitializer);
+			this.getStyleProviderForClass(ForecastItemRenderer).defaultStyleFunction = forecastItemRendererInitializer;
 		}
 
 		private function imageLoaderFactory():ImageLoader
 		{
 			var loader:ImageLoader = new ImageLoader();
-			loader.snapToPixels = true;
-			loader.textureScale = this._scale;
+			loader.pixelSnapping = true;
 			return loader;
 		}
 
 		private function textEditorFactory():ITextEditor
 		{
-			var renderer:StageTextTextEditor = new StageTextTextEditor();
-			renderer.fontFamily = "_sans";
-			renderer.color = 0xffffff;
-			renderer.fontSize = this._normalFontSize;
-			return renderer;
+			var textEditor:StageTextTextEditor = new StageTextTextEditor();
+			textEditor.fontFamily = "_sans";
+			textEditor.color = 0xffffff;
+			textEditor.fontSize = this._normalFontSize;
+			return textEditor;
 		}
 
 		private function defaultTextRendererFactory():TextBlockTextRenderer
 		{
-			var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			renderer.elementFormat = this.defaultElementFormat;
-			return renderer;
+			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
+			textRenderer.elementFormat = this.defaultElementFormat;
+			return textRenderer;
 		}
 
 		private function wrappedTextRendererFactory():TextBlockTextRenderer
 		{
-			var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			renderer.elementFormat = this.defaultElementFormat;
-			renderer.wordWrap = true;
-			renderer.leading = this._eighthGridSize;
-			return renderer;
+			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
+			textRenderer.elementFormat = this.defaultElementFormat;
+			textRenderer.leading = this._eighthGridSize;
+			return textRenderer;
 		}
 
 		private function detailTextRendererFactory():TextBlockTextRenderer
 		{
-			var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			renderer.elementFormat = this.detailElementFormat;
-			return renderer;
+			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
+			textRenderer.elementFormat = this.detailElementFormat;
+			return textRenderer;
 		}
 
 		private function headerTextRendererFactory():TextBlockTextRenderer
 		{
-			var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			renderer.elementFormat = this.headerElementFormat;
-			return renderer;
+			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
+			textRenderer.elementFormat = this.headerElementFormat;
+			return textRenderer;
 		}
 
 		private function forecastHeaderTextRendererFactory():TextBlockTextRenderer
 		{
-			var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			renderer.elementFormat = this.headerElementFormat;
-			renderer.nativeFilters = [new DropShadowFilter(3 * this._scale, 45, 0, 1, 0, 0)];
-			return renderer;
+			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
+			textRenderer.elementFormat = this.headerElementFormat;
+			textRenderer.nativeFilters = [new DropShadowFilter(3, 45, 0, 1, 0, 0)];
+			return textRenderer;
 		}
 
 		private function forecastDetailTextRendererFactory():TextBlockTextRenderer
@@ -483,10 +413,10 @@ package feathers.examples.weather.theme
 
 		private function forecastTemperatureTextRendererFactory():TextBlockTextRenderer
 		{
-			var renderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			renderer.elementFormat = this.tempuratureElementFormat;
-			renderer.nativeFilters = [new DropShadowFilter(3 * this._scale, 45, 0, 1, 0, 0)];
-			return renderer;
+			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
+			textRenderer.elementFormat = this.tempuratureElementFormat;
+			textRenderer.nativeFilters = [new DropShadowFilter(3, 45, 0, 1, 0, 0)];
+			return textRenderer;
 		}
 
 		private function forecastDetailElementFormatFactory(color:uint):ElementFormat
@@ -499,7 +429,7 @@ package feathers.examples.weather.theme
 			view.minWidth = this._gridSize;
 			view.backgroundSkin = new Quad(10, 10, DRAWER_BACKGROUND_COLOR);
 			view.layout = new AnchorLayout();
-			view.customHeaderName = THEME_NAME_LOCATION_VIEW_HEADER;
+			view.customHeaderStyleName = THEME_STYLE_NAME_LOCATION_VIEW_HEADER;
 		}
 
 		private function locationViewHeaderInitializer(header:Header):void
@@ -515,7 +445,7 @@ package feathers.examples.weather.theme
 			layoutData.bottom = 0;
 			layoutData.left = 0;
 			list.layoutData = layoutData;
-			list.itemRendererName = THEME_NAME_LOCATION_LIST_ITEM_RENDERER;
+			list.customItemRendererStyleName = THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER;
 		}
 
 		private function locationViewStatusLabelInitializer(label:Label):void
@@ -532,9 +462,8 @@ package feathers.examples.weather.theme
 		private function searchInputInitializer(input:TextInput):void
 		{
 			var defaultIcon:ImageLoader = new ImageLoader();
-			defaultIcon.snapToPixels = true;
+			defaultIcon.pixelSnapping = true;
 			defaultIcon.source = this.searchIconTexture;
-			defaultIcon.textureScale = this._scale;
 			input.defaultIcon = defaultIcon;
 			input.prompt = "Find New Location";
 			input.backgroundSkin = new Quad(this._threeQuarterGridSize, this._threeQuarterGridSize, INSET_BACKGROUND_COLOR);
@@ -563,19 +492,26 @@ package feathers.examples.weather.theme
 
 		private function forecastViewLocationButtonInitializer(button:Button):void
 		{
-			button.stateToSkinFunction = this.quietButtonSkinSelector.updateValue;
-			button.minWidth = this._halfGridSize;
-			button.minHeight = this._halfGridSize;
+			var defaultSkin:ImageSkin = new ImageSkin();
+			defaultSkin.defaultColor = BACKGROUND_COLOR;
+			defaultSkin.setColorForState(ButtonState.DOWN, SELECTION_COLOR);
+			defaultSkin.width = this._gridSize;
+			defaultSkin.height = this._gridSize;
+			defaultSkin.minWidth = this._halfGridSize;
+			defaultSkin.minHeight = this._halfGridSize;
+			button.defaultSkin = defaultSkin;
+
 			button.paddingTop = this._eighthGridSize;
 			button.paddingRight = this._eighthGridSize;
 			button.gap = this._eighthGridSize;
-			button.iconPosition = Button.ICON_POSITION_LEFT;
-			button.iconOffsetY = -4 * this._scale;
+			button.iconPosition = RelativePosition.LEFT;
+			button.iconOffsetY = -2;
+
 			var defaultIcon:ImageLoader = new ImageLoader();
 			defaultIcon.source = this.menuIconTexture;
-			defaultIcon.snapToPixels = true;
-			defaultIcon.textureScale = this._scale;
+			defaultIcon.pixelSnapping = true;
 			button.defaultIcon = defaultIcon;
+
 			button.defaultLabelProperties.elementFormat = this.headerElementFormat;
 		}
 
@@ -592,18 +528,19 @@ package feathers.examples.weather.theme
 			layout.gap = this._eighthGridSize;
 			layout.padding = this._eighthGridSize;
 			layout.useSquareTiles = true;
-			layout.horizontalAlign = TiledRowsLayout.HORIZONTAL_ALIGN_CENTER;
-			layout.verticalAlign = TiledRowsLayout.VERTICAL_ALIGN_TOP;
-			layout.tileHorizontalAlign = TiledRowsLayout.TILE_HORIZONTAL_ALIGN_JUSTIFY;
-			layout.tileVerticalAlign = TiledRowsLayout.TILE_VERTICAL_ALIGN_JUSTIFY;
+			layout.horizontalAlign = HorizontalAlign.CENTER;
+			layout.verticalAlign = VerticalAlign.TOP;
+			layout.tileHorizontalAlign = HorizontalAlign.JUSTIFY;
+			layout.tileVerticalAlign = VerticalAlign.JUSTIFY;
 			list.layout = layout;
 
-			list.verticalScrollPolicy = List.SCROLL_POLICY_ON;
+			list.verticalScrollPolicy = ScrollPolicy.ON;
 		}
 
 		private function forecastViewStatusLabelInitializer(label:Label):void
 		{
 			label.textRendererFactory = this.wrappedTextRendererFactory;
+			label.wordWrap = true;
 			var layoutData:AnchorLayoutData = new AnchorLayoutData();
 			layoutData.top = this._quarterGridSize;
 			layoutData.right = this._quarterGridSize;
@@ -614,32 +551,37 @@ package feathers.examples.weather.theme
 
 		private function panelHeaderInitializer(header:Header):void
 		{
-			header.titleAlign = Header.TITLE_ALIGN_PREFER_LEFT;
+			header.titleAlign = HorizontalAlign.LEFT;
 			header.padding = this._quarterGridSize;
 			header.titleFactory = headerTextRendererFactory;
 		}
 
-		private function favoriteLocationItemRendererInitializer(renderer:DefaultListItemRenderer):void
+		private function favoriteLocationItemRendererInitializer(itemRenderer:DefaultListItemRenderer):void
 		{
-			renderer.iconLabelFactory = this.detailTextRendererFactory;
-			renderer.iconPosition = DefaultListItemRenderer.ICON_POSITION_BOTTOM;
-			renderer.gap = this._eighthGridSize;
+			itemRenderer.iconLabelFactory = this.detailTextRendererFactory;
+			itemRenderer.iconPosition = RelativePosition.BOTTOM;
+			itemRenderer.gap = this._eighthGridSize;
 
-			renderer.accessoryPosition = DefaultListItemRenderer.ACCESSORY_POSITION_RIGHT;
-			renderer.accessoryGap = Number.POSITIVE_INFINITY;
+			itemRenderer.accessoryPosition = RelativePosition.RIGHT;
+			itemRenderer.accessoryGap = Number.POSITIVE_INFINITY;
 
-			renderer.horizontalAlign = DefaultListItemRenderer.HORIZONTAL_ALIGN_LEFT;
-			renderer.paddingLeft = this._eighthGridSize;
+			itemRenderer.horizontalAlign = HorizontalAlign.LEFT;
+			itemRenderer.paddingLeft = this._eighthGridSize;
 
-			renderer.stateToSkinFunction = this.itemRendererSkinSelector.updateValue;
+			var defaultSkin:ImageSkin = new ImageSkin();
+			defaultSkin.defaultColor = DRAWER_BACKGROUND_COLOR;
+			defaultSkin.selectedColor = SELECTION_COLOR;
+			defaultSkin.setColorForState(ButtonState.DOWN, SELECTION_COLOR)
+			defaultSkin.width = this._gridSize;
+			defaultSkin.height = this._gridSize;
+			itemRenderer.defaultSkin = defaultSkin;
 		}
 
 		private function deleteButtonInitializer(button:Button):void
 		{
 			var defaultIcon:ImageLoader = new ImageLoader();
-			defaultIcon.snapToPixels = true;
+			defaultIcon.pixelSnapping = true;
 			defaultIcon.source = this.deleteIconTexture;
-			defaultIcon.textureScale = this._scale;
 			button.defaultIcon = defaultIcon;
 			var defaultSkin:Quad = new Quad(this._gridSize, this._gridSize, DRAWER_BACKGROUND_COLOR);
 			defaultSkin.alpha = 0;
@@ -647,47 +589,52 @@ package feathers.examples.weather.theme
 			button.downSkin = new Quad(this._gridSize, this._gridSize, INSET_BACKGROUND_COLOR);
 		}
 
-		private function searchResultLocationItemRendererInitializer(renderer:DefaultListItemRenderer):void
+		private function searchResultLocationItemRendererInitializer(itemRenderer:DefaultListItemRenderer):void
 		{
-			renderer.accessoryLabelFactory = this.detailTextRendererFactory;
-			renderer.accessoryPosition = DefaultListItemRenderer.ACCESSORY_POSITION_BOTTOM;
-			renderer.accessoryGap = this._eighthGridSize;
+			itemRenderer.accessoryLabelFactory = this.detailTextRendererFactory;
+			itemRenderer.accessoryPosition = RelativePosition.BOTTOM;
+			itemRenderer.accessoryGap = this._eighthGridSize;
 
-			renderer.iconPosition = DefaultListItemRenderer.ICON_POSITION_RIGHT;
-			renderer.gap = Number.POSITIVE_INFINITY;
+			itemRenderer.iconPosition = RelativePosition.RIGHT;
+			itemRenderer.gap = Number.POSITIVE_INFINITY;
 			var defaultIcon:ImageLoader = new ImageLoader();
-			defaultIcon.snapToPixels = true;
+			defaultIcon.pixelSnapping = true;
 			defaultIcon.source = this.favoriteIconTexture;
-			defaultIcon.textureScale = this._scale;
-			renderer.defaultIcon = defaultIcon;
+			itemRenderer.defaultIcon = defaultIcon;
 
-			renderer.horizontalAlign = DefaultListItemRenderer.HORIZONTAL_ALIGN_LEFT;
-			renderer.verticalAlign = DefaultListItemRenderer.VERTICAL_ALIGN_MIDDLE;
-			renderer.layoutOrder = DefaultListItemRenderer.LAYOUT_ORDER_LABEL_ACCESSORY_ICON;
-			renderer.paddingLeft = this._eighthGridSize;
-			renderer.paddingRight = this._quarterGridSize;
+			itemRenderer.horizontalAlign = HorizontalAlign.LEFT;
+			itemRenderer.verticalAlign = VerticalAlign.MIDDLE;
+			itemRenderer.layoutOrder = ItemRendererLayoutOrder.LABEL_ACCESSORY_ICON;
+			itemRenderer.paddingLeft = this._eighthGridSize;
+			itemRenderer.paddingRight = this._quarterGridSize;
 
-			renderer.stateToSkinFunction = this.itemRendererSkinSelector.updateValue;
+			var defaultSkin:ImageSkin = new ImageSkin();
+			defaultSkin.defaultColor = DRAWER_BACKGROUND_COLOR;
+			defaultSkin.selectedColor = SELECTION_COLOR;
+			defaultSkin.setColorForState(ButtonState.DOWN, SELECTION_COLOR)
+			defaultSkin.width = this._gridSize;
+			defaultSkin.height = this._gridSize;
+			itemRenderer.defaultSkin = defaultSkin;
 		}
 
-		private function forecastItemRendererInitializer(renderer:ForecastItemRenderer):void
+		private function forecastItemRendererInitializer(itemRenderer:ForecastItemRenderer):void
 		{
-			renderer.width = this._gridSize * 3;
-			renderer.height = this._gridSize * 3;
-			renderer.padding = this._eighthGridSize;
-			renderer.gap = this._sixteenthGridSize;
+			itemRenderer.width = this._gridSize * 3;
+			itemRenderer.height = this._gridSize * 3;
+			itemRenderer.padding = this._eighthGridSize;
+			itemRenderer.gap = this._sixteenthGridSize;
 
-			renderer.titleElementFormat = this.headerElementFormat;
-			renderer.iconElementFormat = this.largeIconElementFormat;
-			renderer.temperatureElementFormat = this.tempuratureElementFormat;
-			renderer.detailElementFormatFactory = this.forecastDetailElementFormatFactory;
+			itemRenderer.titleElementFormat = this.headerElementFormat;
+			itemRenderer.iconElementFormat = this.largeIconElementFormat;
+			itemRenderer.temperatureElementFormat = this.tempuratureElementFormat;
+			itemRenderer.detailElementFormatFactory = this.forecastDetailElementFormatFactory;
 
-			renderer.conditionCodeToIcon = CONDITION_CODE_TO_ICON;
-			renderer.unavailableConditionCodeIcon = UNAVAILABLE_ICON;
-			renderer.conditionCodeToColor = CONDITION_CODE_TO_COLOR;
-			renderer.unavailableConditionCodeColor = DAY_COLOR;
-			renderer.conditionCodeToAccentColor = CONDITION_CODE_TO_ACCENT_COLOR;
-			renderer.unavailableConditionCodeAccentColor = DAY_ACCENT_COLOR;
+			itemRenderer.conditionCodeToIcon = CONDITION_CODE_TO_ICON;
+			itemRenderer.unavailableConditionCodeIcon = UNAVAILABLE_ICON;
+			itemRenderer.conditionCodeToColor = CONDITION_CODE_TO_COLOR;
+			itemRenderer.unavailableConditionCodeColor = DAY_COLOR;
+			itemRenderer.conditionCodeToAccentColor = CONDITION_CODE_TO_ACCENT_COLOR;
+			itemRenderer.unavailableConditionCodeAccentColor = DAY_ACCENT_COLOR;
 		}
 
 	}
