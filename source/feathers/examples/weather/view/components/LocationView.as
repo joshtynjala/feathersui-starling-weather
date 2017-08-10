@@ -38,6 +38,7 @@ package feathers.examples.weather.view.components
 
 		public function LocationView()
 		{
+			super();
 			this.headerFactory = customHeaderFactory;
 		}
 
@@ -159,6 +160,7 @@ package feathers.examples.weather.view.components
 			this.addChild(this._locationsList);
 
 			this._searchInput = new TextInput();
+			this._searchInput.prompt = "Find New Location";
 			this._searchInput.styleNameList.add(TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT);
 			this._searchInput.addEventListener(Event.CHANGE, searchInput_changeHandler);
 

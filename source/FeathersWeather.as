@@ -1,6 +1,7 @@
 package
 {
 	import feathers.examples.weather.Main;
+	import feathers.utils.ScreenDensityScaleFactorManager;
 
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -16,7 +17,6 @@ package
 	import flash.utils.ByteArray;
 
 	import starling.core.Starling;
-	import feathers.utils.ScreenDensityScaleFactorManager;
 
 	[SWF(width="960",height="640",frameRate="60",backgroundColor="#4d545e")]
 	public class FeathersWeather extends Sprite

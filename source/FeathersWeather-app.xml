@@ -16,7 +16,7 @@
 	</initialWindow>
 
 	<supportedLanguages>en</supportedLanguages>
-<!-- 
+ 
 	<icon>
 		<image29x29>icon29.png</image29x29>
 		<image48x48>icon48.png</image48x48>
@@ -29,7 +29,7 @@
 		<image114x114>icon114.png</image114x114>
 		<image128x128>icon128.png</image128x128>
 		<image144x144>icon144.png</image144x144>
-	</icon> -->
+	</icon>
 	<android>
 		<colorDepth>16bit</colorDepth>
 		<manifestAdditions><![CDATA[

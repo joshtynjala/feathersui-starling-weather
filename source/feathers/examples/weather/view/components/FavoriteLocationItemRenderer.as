@@ -3,11 +3,11 @@ package feathers.examples.weather.view.components
 	import feathers.controls.Button;
 	import feathers.controls.List;
 	import feathers.controls.renderers.DefaultListItemRenderer;
+	import feathers.data.IListCollection;
 	import feathers.data.ListCollection;
+	import feathers.skins.IStyleProvider;
 
 	import starling.events.Event;
-	import feathers.data.IListCollection;
-	import feathers.skins.IStyleProvider;
 
 	public class FavoriteLocationItemRenderer extends DefaultListItemRenderer
 	{
@@ -19,6 +19,7 @@ package feathers.examples.weather.view.components
 
 		public function FavoriteLocationItemRenderer()
 		{
+			super();
 		}
 
 		override protected function get defaultStyleProvider():IStyleProvider
@@ -60,7 +61,7 @@ package feathers.examples.weather.view.components
 			this.deleteButton = new Button();
 			this.deleteButton.styleNameList.add(CHILD_STYLE_NAME_DELETE_BUTTON);
 			this.deleteButton.addEventListener(Event.TRIGGERED, deleteButton_triggeredHandler);
-			this.replaceAccessory(this.deleteButton);
+			this.defaultAccessory = this.deleteButton;
 		}
 
 		override protected function commitData():void

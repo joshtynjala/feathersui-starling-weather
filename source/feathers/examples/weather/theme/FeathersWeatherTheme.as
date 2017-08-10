@@ -1,11 +1,14 @@
 package feathers.examples.weather.theme
 {
 	import feathers.controls.Button;
+	import feathers.controls.ButtonState;
 	import feathers.controls.Header;
 	import feathers.controls.ImageLoader;
+	import feathers.controls.ItemRendererLayoutOrder;
 	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.Panel;
+	import feathers.controls.ScrollPolicy;
 	import feathers.controls.TextInput;
 	import feathers.controls.renderers.DefaultListItemRenderer;
 	import feathers.controls.text.StageTextTextEditor;
@@ -18,30 +21,19 @@ package feathers.examples.weather.theme
 	import feathers.examples.weather.view.components.LocationView;
 	import feathers.layout.AnchorLayout;
 	import feathers.layout.AnchorLayoutData;
+	import feathers.layout.HorizontalAlign;
+	import feathers.layout.RelativePosition;
 	import feathers.layout.TiledRowsLayout;
-	import feathers.system.DeviceCapabilities;
-
-	import flash.filters.DropShadowFilter;
-	import flash.text.engine.CFFHinting;
-	import flash.text.engine.ElementFormat;
-	import flash.text.engine.FontDescription;
-	import flash.text.engine.FontLookup;
-	import flash.text.engine.FontPosture;
-	import flash.text.engine.FontWeight;
-	import flash.text.engine.RenderingMode;
+	import feathers.layout.VerticalAlign;
+	import feathers.skins.ImageSkin;
+	import feathers.themes.StyleNameFunctionTheme;
 
 	import starling.core.Starling;
 	import starling.display.Quad;
+	import starling.text.TextFormat;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
-	import feathers.layout.RelativePosition;
-	import feathers.controls.ScrollPolicy;
-	import feathers.layout.HorizontalAlign;
-	import feathers.layout.VerticalAlign;
-	import feathers.controls.ButtonState;
-	import feathers.themes.StyleNameFunctionTheme;
-	import feathers.skins.ImageSkin;
-	import feathers.controls.ItemRendererLayoutOrder;
+	import starling.utils.Align;
 
 	public class FeathersWeatherTheme extends StyleNameFunctionTheme
 	{
@@ -63,6 +55,7 @@ package feathers.examples.weather.theme
 		private static const THEME_STYLE_NAME_LOCATION_VIEW_HEADER:String = "FeathersWeatherTheme-LocationView-Header";
 		private static const THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER:String = "FeathersWeatherTheme-LocationList-ItemRenderer";
 
+		private static const INPUT_FONT_NAME:String = "_sans";
 		private static const TEXT_FONT_NAME:String = "MuseoSans";
 		private static const ICON_FONT_NAME:String = "Typicons";
 
@@ -272,12 +265,12 @@ package feathers.examples.weather.theme
 		private var _normalFontSize:Number = 15;
 		private var _detailFontSize:Number = 12;
 
-		private var defaultElementFormat:ElementFormat;
-		private var headerElementFormat:ElementFormat;
-		private var tempuratureElementFormat:ElementFormat;
-		private var detailElementFormat:ElementFormat;
-		private var textItalicFontDescription:FontDescription;
-		private var largeIconElementFormat:ElementFormat;
+		private var defaultFontStyles:TextFormat;
+		private var headerFontStyles:TextFormat;
+		private var inputFontStyles:TextFormat;
+		private var tempuratureFontStyles:TextFormat;
+		private var detailFontStyles:TextFormat;
+		private var largeIconFontStyles:TextFormat;
 
 		private var _iconsAtlas:TextureAtlas;
 
@@ -296,15 +289,13 @@ package feathers.examples.weather.theme
 
 		private function initializeFonts():void
 		{
-			var textFontDescription:FontDescription = new FontDescription(TEXT_FONT_NAME, FontWeight.NORMAL, FontPosture.NORMAL, FontLookup.EMBEDDED_CFF, RenderingMode.CFF, CFFHinting.NONE);
-			this.textItalicFontDescription = new FontDescription(TEXT_FONT_NAME, FontWeight.NORMAL, FontPosture.ITALIC, FontLookup.EMBEDDED_CFF, RenderingMode.CFF, CFFHinting.NONE);
-			var iconFontDescription:FontDescription = new FontDescription(ICON_FONT_NAME, FontWeight.NORMAL, FontPosture.NORMAL, FontLookup.EMBEDDED_CFF, RenderingMode.CFF, CFFHinting.NONE);
-			this.defaultElementFormat = new ElementFormat(textFontDescription, this._normalFontSize, 0xffffff);
-			this.headerElementFormat = new ElementFormat(textFontDescription, this._headerFontSize, 0xffffff);
-			this.detailElementFormat = new ElementFormat(this.textItalicFontDescription, this._detailFontSize, 0xe8e8e8);
-			this.tempuratureElementFormat = new ElementFormat(textFontDescription, this._tempuratureFontSize, 0xffffff);
-			this.largeIconElementFormat = new ElementFormat(iconFontDescription, this._tempuratureFontSize, 0xffffff, 1);
-			this.largeIconElementFormat.trackingRight = this._sixteenthGridSize;
+			this.defaultFontStyles = new TextFormat(TEXT_FONT_NAME, this._normalFontSize, 0xffffff, Align.LEFT, Align.TOP);
+			this.headerFontStyles = new TextFormat(TEXT_FONT_NAME, this._headerFontSize, 0xffffff, Align.LEFT, Align.TOP);
+			this.detailFontStyles = new TextFormat(TEXT_FONT_NAME, this._detailFontSize, 0xe8e8e8, Align.LEFT, Align.TOP);
+			this.detailFontStyles.italic = true;
+			this.inputFontStyles = new TextFormat(INPUT_FONT_NAME, this._normalFontSize, 0xffffff, Align.LEFT, Align.TOP);
+			this.tempuratureFontStyles = new TextFormat(TEXT_FONT_NAME, this._tempuratureFontSize, 0xffffff);
+			this.largeIconFontStyles = new TextFormat(ICON_FONT_NAME, this._tempuratureFontSize, 0xffffff);
 		}
 
 		private function initializeTextures():void
@@ -321,36 +312,36 @@ package feathers.examples.weather.theme
 		private function initializeGlobals():void
 		{
 			FeathersControl.defaultTextRendererFactory = this.defaultTextRendererFactory;
-			FeathersControl.defaultTextEditorFactory = this.textEditorFactory;
+			FeathersControl.defaultTextEditorFactory = this.defaultTextEditorFactory;
 		}
 
 		private function initializeStyleProviders():void
 		{
 			//panel
-			this.getStyleProviderForClass(Header).setFunctionForStyleName(Panel.DEFAULT_CHILD_STYLE_NAME_HEADER, panelHeaderInitializer);
+			this.getStyleProviderForClass(Header).setFunctionForStyleName(Panel.DEFAULT_CHILD_STYLE_NAME_HEADER, setPanelHeaderStyles);
 
 			//text input
-			this.getStyleProviderForClass(TextInput).setFunctionForStyleName(TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT, searchInputInitializer);
+			this.getStyleProviderForClass(TextInput).setFunctionForStyleName(TextInput.ALTERNATE_STYLE_NAME_SEARCH_TEXT_INPUT, setSearchInputStyles);
 
 			//label
-			this.getStyleProviderForClass(Label).setFunctionForStyleName(Label.ALTERNATE_STYLE_NAME_DETAIL, detailLabelInitializer);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName(Label.ALTERNATE_STYLE_NAME_DETAIL, setDetailLabelStyles);
 
 			//location view
-			this.getStyleProviderForClass(LocationView).defaultStyleFunction = locationViewInitializer;
-			this.getStyleProviderForClass(Header).setFunctionForStyleName(THEME_STYLE_NAME_LOCATION_VIEW_HEADER, locationViewHeaderInitializer);
-			this.getStyleProviderForClass(List).setFunctionForStyleName(LocationView.CHILD_STYLE_NAME_LIST, locationViewListInitializer);
-			this.getStyleProviderForClass(Label).setFunctionForStyleName(LocationView.CHILD_STYLE_NAME_STATUS_LABEL, locationViewStatusLabelInitializer);
-			this.getStyleProviderForClass(FavoriteLocationItemRenderer).defaultStyleFunction = favoriteLocationItemRendererInitializer;
-			this.getStyleProviderForClass(Button).setFunctionForStyleName(FavoriteLocationItemRenderer.CHILD_STYLE_NAME_DELETE_BUTTON, deleteButtonInitializer);
-			this.getStyleProviderForClass(DefaultListItemRenderer).setFunctionForStyleName(THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER, searchResultLocationItemRendererInitializer);
+			this.getStyleProviderForClass(LocationView).defaultStyleFunction = setLocationViewStyles;
+			this.getStyleProviderForClass(Header).setFunctionForStyleName(THEME_STYLE_NAME_LOCATION_VIEW_HEADER, setLocationViewHeaderStyles);
+			this.getStyleProviderForClass(List).setFunctionForStyleName(LocationView.CHILD_STYLE_NAME_LIST, setLocationViewListStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName(LocationView.CHILD_STYLE_NAME_STATUS_LABEL, setLocationViewStatusLabelStyles);
+			this.getStyleProviderForClass(FavoriteLocationItemRenderer).defaultStyleFunction = setFavoriteLocationItemRendererStyles;
+			this.getStyleProviderForClass(Button).setFunctionForStyleName(FavoriteLocationItemRenderer.CHILD_STYLE_NAME_DELETE_BUTTON, setDeleteButtonAccessoryStyles);
+			this.getStyleProviderForClass(DefaultListItemRenderer).setFunctionForStyleName(THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER, setSearchResultLocationItemRendererStyles);
 
 			//forecast view
-			this.getStyleProviderForClass(ForecastView).defaultStyleFunction = forecastViewInitializer;
-			this.getStyleProviderForClass(Header).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_HEADER, forecastViewHeaderInitializer);
-			this.getStyleProviderForClass(List).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_LIST, forecastViewListInitializer);
-			this.getStyleProviderForClass(Button).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_LOCATION_BUTTON, forecastViewLocationButtonInitializer);
-			this.getStyleProviderForClass(Label).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_STATUS_LABEL, forecastViewStatusLabelInitializer);
-			this.getStyleProviderForClass(ForecastItemRenderer).defaultStyleFunction = forecastItemRendererInitializer;
+			this.getStyleProviderForClass(ForecastView).defaultStyleFunction = setForecastViewStyles;
+			this.getStyleProviderForClass(Header).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_HEADER, setForecastViewHeaderStyles);
+			this.getStyleProviderForClass(List).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_LIST, setForecastViewListStyles);
+			this.getStyleProviderForClass(Button).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_LOCATION_BUTTON, setForecastViewLocationButtonStyles);
+			this.getStyleProviderForClass(Label).setFunctionForStyleName(ForecastView.CHILD_STYLE_NAME_STATUS_LABEL, setForecastViewStatusLabelStyles);
+			this.getStyleProviderForClass(ForecastItemRenderer).defaultStyleFunction = setForecastItemRendererStyles;
 		}
 
 		private function imageLoaderFactory():ImageLoader
@@ -360,84 +351,43 @@ package feathers.examples.weather.theme
 			return loader;
 		}
 
-		private function textEditorFactory():ITextEditor
+		private function defaultTextEditorFactory():ITextEditor
 		{
-			var textEditor:StageTextTextEditor = new StageTextTextEditor();
-			textEditor.fontFamily = "_sans";
-			textEditor.color = 0xffffff;
-			textEditor.fontSize = this._normalFontSize;
-			return textEditor;
+			return new StageTextTextEditor();
 		}
 
 		private function defaultTextRendererFactory():TextBlockTextRenderer
 		{
-			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			textRenderer.elementFormat = this.defaultElementFormat;
-			return textRenderer;
-		}
-
-		private function wrappedTextRendererFactory():TextBlockTextRenderer
-		{
-			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			textRenderer.elementFormat = this.defaultElementFormat;
-			textRenderer.leading = this._eighthGridSize;
-			return textRenderer;
-		}
-
-		private function detailTextRendererFactory():TextBlockTextRenderer
-		{
-			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			textRenderer.elementFormat = this.detailElementFormat;
-			return textRenderer;
-		}
-
-		private function headerTextRendererFactory():TextBlockTextRenderer
-		{
-			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			textRenderer.elementFormat = this.headerElementFormat;
-			return textRenderer;
-		}
-
-		private function forecastHeaderTextRendererFactory():TextBlockTextRenderer
-		{
-			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			textRenderer.elementFormat = this.headerElementFormat;
-			textRenderer.nativeFilters = [new DropShadowFilter(3, 45, 0, 1, 0, 0)];
-			return textRenderer;
-		}
-
-		private function forecastDetailTextRendererFactory():TextBlockTextRenderer
-		{
 			return new TextBlockTextRenderer();
 		}
 
-		private function forecastTemperatureTextRendererFactory():TextBlockTextRenderer
+		private function forecastDetailFontStylesFactory(color:uint):TextFormat
 		{
-			var textRenderer:TextBlockTextRenderer = new TextBlockTextRenderer();
-			textRenderer.elementFormat = this.tempuratureElementFormat;
-			textRenderer.nativeFilters = [new DropShadowFilter(3, 45, 0, 1, 0, 0)];
-			return textRenderer;
+			var fontStyles:TextFormat = this.detailFontStyles.clone();
+			fontStyles.color = color;
+			return fontStyles;
 		}
 
-		private function forecastDetailElementFormatFactory(color:uint):ElementFormat
+		private function setLocationViewStyles(view:LocationView):void
 		{
-			return new ElementFormat(this.textItalicFontDescription, this._detailFontSize, color);
-		}
+			var backgroundSkin:ImageSkin = new ImageSkin();
+			backgroundSkin.defaultColor = DRAWER_BACKGROUND_COLOR;
+			backgroundSkin.width = 1;
+			backgroundSkin.height = 1;
+			backgroundSkin.minWidth = this._gridSize;
+			view.backgroundSkin = backgroundSkin;
 
-		private function locationViewInitializer(view:LocationView):void
-		{
-			view.minWidth = this._gridSize;
-			view.backgroundSkin = new Quad(10, 10, DRAWER_BACKGROUND_COLOR);
 			view.layout = new AnchorLayout();
+
 			view.customHeaderStyleName = THEME_STYLE_NAME_LOCATION_VIEW_HEADER;
 		}
 
-		private function locationViewHeaderInitializer(header:Header):void
+		private function setLocationViewHeaderStyles(header:Header):void
 		{
 			header.padding = this._eighthGridSize;
 		}
 
-		private function locationViewListInitializer(list:List):void
+		private function setLocationViewListStyles(list:List):void
 		{
 			var layoutData:AnchorLayoutData = new AnchorLayoutData();
 			layoutData.top = 0;
@@ -448,9 +398,13 @@ package feathers.examples.weather.theme
 			list.customItemRendererStyleName = THEME_STYLE_NAME_LOCATION_LIST_ITEM_RENDERER;
 		}
 
-		private function locationViewStatusLabelInitializer(label:Label):void
+		private function setLocationViewStatusLabelStyles(label:Label):void
 		{
-			label.textRendererFactory = this.wrappedTextRendererFactory;
+			var fontStyles:TextFormat = this.defaultFontStyles.clone();
+			fontStyles.leading = this._eighthGridSize;
+			label.fontStyles = fontStyles;
+			label.wordWrap = true;
+
 			var layoutData:AnchorLayoutData = new AnchorLayoutData();
 			layoutData.top = this._quarterGridSize;
 			layoutData.right = this._quarterGridSize;
@@ -459,38 +413,46 @@ package feathers.examples.weather.theme
 			label.layoutData = layoutData;
 		}
 
-		private function searchInputInitializer(input:TextInput):void
+		private function setSearchInputStyles(input:TextInput):void
 		{
 			var defaultIcon:ImageLoader = new ImageLoader();
 			defaultIcon.pixelSnapping = true;
 			defaultIcon.source = this.searchIconTexture;
 			input.defaultIcon = defaultIcon;
-			input.prompt = "Find New Location";
-			input.backgroundSkin = new Quad(this._threeQuarterGridSize, this._threeQuarterGridSize, INSET_BACKGROUND_COLOR);
-			input.backgroundSkin.alpha = 0.5;
-			input.minWidth = this._gridSize * 4;
-			input.minHeight = this._threeQuarterGridSize;
+
+			input.fontStyles = this.inputFontStyles;
+			input.promptFontStyles = this.defaultFontStyles;
+
+			var backgroundSkin:ImageSkin = new ImageSkin();
+			backgroundSkin.defaultColor = INSET_BACKGROUND_COLOR;
+			backgroundSkin.width = this._gridSize * 4;
+			backgroundSkin.height = this._threeQuarterGridSize;
+			backgroundSkin.minWidth = this._gridSize * 4;
+			backgroundSkin.minHeight = this._quarterGridSize;
+			backgroundSkin.alpha = 0.5;
+			input.backgroundSkin = backgroundSkin;
+
 			input.padding = this._eighthGridSize;
 			input.gap = this._eighthGridSize;
 		}
 
-		private function detailLabelInitializer(label:Label):void
+		private function setDetailLabelStyles(label:Label):void
 		{
-			label.textRendererFactory = this.detailTextRendererFactory;
+			label.fontStyles = this.detailFontStyles;
 		}
 
-		private function forecastViewInitializer(view:ForecastView):void
+		private function setForecastViewStyles(view:ForecastView):void
 		{
 			view.layout = new AnchorLayout();
 		}
 
-		private function forecastViewHeaderInitializer(header:Header):void
+		private function setForecastViewHeaderStyles(header:Header):void
 		{
 			header.padding = 0;
 			header.paddingRight = this._eighthGridSize;
 		}
 
-		private function forecastViewLocationButtonInitializer(button:Button):void
+		private function setForecastViewLocationButtonStyles(button:Button):void
 		{
 			var defaultSkin:ImageSkin = new ImageSkin();
 			defaultSkin.defaultColor = BACKGROUND_COLOR;
@@ -505,17 +467,16 @@ package feathers.examples.weather.theme
 			button.paddingRight = this._eighthGridSize;
 			button.gap = this._eighthGridSize;
 			button.iconPosition = RelativePosition.LEFT;
-			button.iconOffsetY = -2;
 
 			var defaultIcon:ImageLoader = new ImageLoader();
 			defaultIcon.source = this.menuIconTexture;
 			defaultIcon.pixelSnapping = true;
 			button.defaultIcon = defaultIcon;
 
-			button.defaultLabelProperties.elementFormat = this.headerElementFormat;
+			button.fontStyles = this.headerFontStyles;
 		}
 
-		private function forecastViewListInitializer(list:List):void
+		private function setForecastViewListStyles(list:List):void
 		{
 			var layoutData:AnchorLayoutData = new AnchorLayoutData();
 			layoutData.top = 0;
@@ -537,9 +498,11 @@ package feathers.examples.weather.theme
 			list.verticalScrollPolicy = ScrollPolicy.ON;
 		}
 
-		private function forecastViewStatusLabelInitializer(label:Label):void
+		private function setForecastViewStatusLabelStyles(label:Label):void
 		{
-			label.textRendererFactory = this.wrappedTextRendererFactory;
+			var fontStyles:TextFormat = this.defaultFontStyles.clone();
+			fontStyles.leading = this._eighthGridSize;
+			label.fontStyles = fontStyles;
 			label.wordWrap = true;
 			var layoutData:AnchorLayoutData = new AnchorLayoutData();
 			layoutData.top = this._quarterGridSize;
@@ -549,16 +512,17 @@ package feathers.examples.weather.theme
 			label.layoutData = layoutData;
 		}
 
-		private function panelHeaderInitializer(header:Header):void
+		private function setPanelHeaderStyles(header:Header):void
 		{
 			header.titleAlign = HorizontalAlign.LEFT;
 			header.padding = this._quarterGridSize;
-			header.titleFactory = headerTextRendererFactory;
+			header.fontStyles = this.headerFontStyles;
 		}
 
-		private function favoriteLocationItemRendererInitializer(itemRenderer:DefaultListItemRenderer):void
+		private function setFavoriteLocationItemRendererStyles(itemRenderer:DefaultListItemRenderer):void
 		{
-			itemRenderer.iconLabelFactory = this.detailTextRendererFactory;
+			itemRenderer.fontStyles = this.defaultFontStyles;
+			itemRenderer.iconLabelFontStyles = this.detailFontStyles;
 			itemRenderer.iconPosition = RelativePosition.BOTTOM;
 			itemRenderer.gap = this._eighthGridSize;
 
@@ -577,7 +541,7 @@ package feathers.examples.weather.theme
 			itemRenderer.defaultSkin = defaultSkin;
 		}
 
-		private function deleteButtonInitializer(button:Button):void
+		private function setDeleteButtonAccessoryStyles(button:Button):void
 		{
 			var defaultIcon:ImageLoader = new ImageLoader();
 			defaultIcon.pixelSnapping = true;
@@ -589,9 +553,10 @@ package feathers.examples.weather.theme
 			button.downSkin = new Quad(this._gridSize, this._gridSize, INSET_BACKGROUND_COLOR);
 		}
 
-		private function searchResultLocationItemRendererInitializer(itemRenderer:DefaultListItemRenderer):void
+		private function setSearchResultLocationItemRendererStyles(itemRenderer:DefaultListItemRenderer):void
 		{
-			itemRenderer.accessoryLabelFactory = this.detailTextRendererFactory;
+			itemRenderer.fontStyles = this.defaultFontStyles;
+			itemRenderer.accessoryLabelFontStyles = this.detailFontStyles;
 			itemRenderer.accessoryPosition = RelativePosition.BOTTOM;
 			itemRenderer.accessoryGap = this._eighthGridSize;
 
@@ -617,17 +582,17 @@ package feathers.examples.weather.theme
 			itemRenderer.defaultSkin = defaultSkin;
 		}
 
-		private function forecastItemRendererInitializer(itemRenderer:ForecastItemRenderer):void
+		private function setForecastItemRendererStyles(itemRenderer:ForecastItemRenderer):void
 		{
 			itemRenderer.width = this._gridSize * 3;
 			itemRenderer.height = this._gridSize * 3;
 			itemRenderer.padding = this._eighthGridSize;
 			itemRenderer.gap = this._sixteenthGridSize;
 
-			itemRenderer.titleElementFormat = this.headerElementFormat;
-			itemRenderer.iconElementFormat = this.largeIconElementFormat;
-			itemRenderer.temperatureElementFormat = this.tempuratureElementFormat;
-			itemRenderer.detailElementFormatFactory = this.forecastDetailElementFormatFactory;
+			itemRenderer.titleFontStyles = this.headerFontStyles;
+			itemRenderer.iconFontStyles = this.largeIconFontStyles;
+			itemRenderer.temperatureFontStyles = this.tempuratureFontStyles;
+			itemRenderer.detailFontStylesFactory = this.forecastDetailFontStylesFactory;
 
 			itemRenderer.conditionCodeToIcon = CONDITION_CODE_TO_ICON;
 			itemRenderer.unavailableConditionCodeIcon = UNAVAILABLE_ICON;

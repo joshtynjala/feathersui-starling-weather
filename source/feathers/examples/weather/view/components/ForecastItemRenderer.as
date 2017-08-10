@@ -1,19 +1,18 @@
 package feathers.examples.weather.view.components
 {
+	import feathers.controls.Label;
+	import feathers.controls.LayoutGroup;
 	import feathers.controls.renderers.LayoutGroupListItemRenderer;
 	import feathers.controls.text.TextBlockTextRenderer;
 	import feathers.examples.weather.model.ForecastItem;
 	import feathers.layout.AnchorLayout;
 	import feathers.layout.AnchorLayoutData;
-
-	import flash.filters.DropShadowFilter;
-	import flash.text.engine.ContentElement;
-	import flash.text.engine.ElementFormat;
-	import flash.text.engine.GroupElement;
-	import flash.text.engine.TextElement;
+	import feathers.layout.HorizontalLayout;
+	import feathers.layout.VerticalAlign;
+	import feathers.skins.IStyleProvider;
 
 	import starling.display.Quad;
-	import feathers.skins.IStyleProvider;
+	import starling.text.TextFormat;
 
 	public class ForecastItemRenderer extends LayoutGroupListItemRenderer
 	{
@@ -25,6 +24,7 @@ package feathers.examples.weather.view.components
 
 		public function ForecastItemRenderer()
 		{
+			super();
 		}
 
 		override protected function get defaultStyleProvider():IStyleProvider
@@ -33,79 +33,78 @@ package feathers.examples.weather.view.components
 		}
 
 		private var _background:Quad;
-		private var _iconTextElement:TextElement;
-		private var _tempTextElement:TextElement;
-		private var _groupElement:GroupElement;
-		private var _titleTextRenderer:TextBlockTextRenderer;
-		private var _detail1TextRenderer:TextBlockTextRenderer;
-		private var _iconAndTempTextRenderer:TextBlockTextRenderer;
-		private var _detail2TextRenderer:TextBlockTextRenderer;
+		private var _iconAndTempGroup:LayoutGroup;
+		private var _iconLabel:Label;
+		private var _tempLabel:Label;
+		private var _titleLabel:Label;
+		private var _detail1Label:Label;
+		private var _detail2Label:Label;
 
-		private var _iconElementFormat:ElementFormat;
+		private var _iconFontStyles:TextFormat;
 
-		public function get iconElementFormat():ElementFormat
+		public function get iconFontStyles():TextFormat
 		{
-			return this._iconElementFormat;
+			return this._iconFontStyles;
 		}
 
-		public function set iconElementFormat(value:ElementFormat):void
+		public function set iconFontStyles(value:TextFormat):void
 		{
-			if(this._iconElementFormat == value)
+			if(this._iconFontStyles == value)
 			{
 				return;
 			}
-			this._iconElementFormat = value;
+			this._iconFontStyles = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
-		private var _temperatureElementFormat:ElementFormat;
+		private var _temperatureFontStyles:TextFormat;
 
-		public function get temperatureElementFormat():ElementFormat
+		public function get temperatureFontStyles():TextFormat
 		{
-			return this._temperatureElementFormat;
+			return this._temperatureFontStyles;
 		}
 
-		public function set temperatureElementFormat(value:ElementFormat):void
+		public function set temperatureFontStyles(value:TextFormat):void
 		{
-			if(this._temperatureElementFormat == value)
+			if(this._temperatureFontStyles == value)
 			{
 				return;
 			}
-			this._temperatureElementFormat = value;
+			this._temperatureFontStyles = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
-		private var _titleElementFormat:ElementFormat;
+		private var _titleFontStyles:TextFormat;
 
-		public function get titleElementFormat():ElementFormat
+		public function get titleFontStyles():TextFormat
 		{
-			return this._titleElementFormat;
+			return this._titleFontStyles;
 		}
 
-		public function set titleElementFormat(value:ElementFormat):void
+		public function set titleFontStyles(value:TextFormat):void
 		{
-			if(this._titleElementFormat == value)
+			if(this._titleFontStyles == value)
 			{
 				return;
 			}
-			this._titleElementFormat = value;
+			this._titleFontStyles = value;
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
-		private var _detailElementFormatFactory:Function;
+		private var _detailFontStylesFactory:Function;
 
-		public function get detailElementFormatFactory():Function
+		public function get detailFontStylesFactory():Function
 		{
-			return this._detailElementFormatFactory;
+			return this._detailFontStylesFactory;
 		}
 
-		public function set detailElementFormatFactory(value:Function):void
+		public function set detailFontStylesFactory(value:Function):void
 		{
-			if(this._detailElementFormatFactory == value)
+			if(this._detailFontStylesFactory == value)
 			{
 				return;
 			}
-			this._detailElementFormatFactory = value;
+			this._detailFontStylesFactory = value;
 			this.invalidate(INVALIDATION_FLAG_DATA);
 		}
 
@@ -245,38 +244,37 @@ package feathers.examples.weather.view.components
 			this.invalidate(INVALIDATION_FLAG_STYLES);
 		}
 
-		private var _filter:DropShadowFilter;
-		private var _filters:Array;
-
 		override protected function initialize():void
 		{
 			this.layout = new AnchorLayout();
 
-			this._filter = new DropShadowFilter(3, 45, 0, 1, 0, 0);
-			this._filters = [this._filter];
-
 			this._background = new Quad(10, 10);
 			this.addChild(this._background);
 
-			this._titleTextRenderer = new TextBlockTextRenderer();
-			this._titleTextRenderer.layoutData = new AnchorLayoutData();
-			this.addChild(this._titleTextRenderer);
+			this._titleLabel = new Label();
+			this._titleLabel.layoutData = new AnchorLayoutData();
+			this.addChild(this._titleLabel);
 
-			this._detail1TextRenderer = new TextBlockTextRenderer();
-			this._detail1TextRenderer.layoutData = new AnchorLayoutData();
-			this.addChild(this._detail1TextRenderer);
+			this._detail1Label = new Label();
+			this._detail1Label.layoutData = new AnchorLayoutData();
+			this.addChild(this._detail1Label);
 
-			this._iconAndTempTextRenderer = new TextBlockTextRenderer();
-			this._iconAndTempTextRenderer.layoutData = new AnchorLayoutData();
-			this.addChild(this._iconAndTempTextRenderer);
+			this._iconAndTempGroup = new LayoutGroup();
+			var iconAndTempLayout:HorizontalLayout = new HorizontalLayout();
+			iconAndTempLayout.gap = 4;
+			this._iconAndTempGroup.layout = iconAndTempLayout;
+			this._iconAndTempGroup.layoutData = new AnchorLayoutData();
+			this.addChild(this._iconAndTempGroup);
 
-			this._detail2TextRenderer = new TextBlockTextRenderer();
-			this._detail2TextRenderer.layoutData = new AnchorLayoutData();
-			this.addChild(this._detail2TextRenderer);
+			this._iconLabel = new Label();
+			this._iconAndTempGroup.addChild(this._iconLabel);
 
-			this._iconTextElement = new TextElement();
-			this._tempTextElement = new TextElement();
-			this._groupElement = new GroupElement(new <ContentElement>[this._iconTextElement, this._tempTextElement]);
+			this._tempLabel = new Label();
+			this._iconAndTempGroup.addChild(this._tempLabel);
+
+			this._detail2Label = new Label();
+			this._detail2Label.layoutData = new AnchorLayoutData();
+			this.addChild(this._detail2Label);
 		}
 
 		override protected function draw():void
@@ -284,10 +282,9 @@ package feathers.examples.weather.view.components
 			var stylesInvalid:Boolean = this.isInvalid(INVALIDATION_FLAG_STYLES);
 			if(stylesInvalid)
 			{
-				this._titleTextRenderer.elementFormat = this._titleElementFormat;
-				this._iconTextElement.elementFormat = this._iconElementFormat;
-				this._tempTextElement.elementFormat = this._temperatureElementFormat;
-				this._filter.distance = this._temperatureElementFormat.fontSize / 33;
+				this._titleLabel.fontStyles = this._titleFontStyles;
+				this._iconLabel.fontStyles = this._iconFontStyles;
+				this._tempLabel.fontStyles = this._temperatureFontStyles;
 			}
 			super.draw();
 		}
@@ -299,48 +296,42 @@ package feathers.examples.weather.view.components
 				var data:ForecastItem = ForecastItem(this._data);
 				var codeAsString:String = data.code;
 				var code:int = parseInt(codeAsString, 10);
-				var accentElementFormat:ElementFormat;
+				var accentFontStyles:TextFormat;
 				if(code != CONDITION_CODE_UNAVAILABLE && this._conditionCodeToIcon.hasOwnProperty(codeAsString))
 				{
-					this._iconTextElement.text = this._conditionCodeToIcon[code];
+					this._iconLabel.text = this._conditionCodeToIcon[code];
 					this._background.color = this._conditionCodeToColor[code];
-					this._filter.color = this._conditionCodeToAccentColor[code];
-					accentElementFormat = this._detailElementFormatFactory(this._conditionCodeToAccentColor[code]);
+					accentFontStyles = this._detailFontStylesFactory(this._conditionCodeToAccentColor[code]);
 				}
 				else
 				{
-					this._iconTextElement.text = this._unavailableConditionCodeIcon;
+					this._iconLabel.text = this._unavailableConditionCodeIcon;
 					this._background.color = this._unavailableConditionCodeColor;
-					this._filter.color = this._unavailableConditionCodeAccentColor;
-					accentElementFormat = this._detailElementFormatFactory(this._unavailableConditionCodeAccentColor);
+					accentFontStyles = this._detailFontStylesFactory(this._unavailableConditionCodeAccentColor);
 				}
-				this._titleTextRenderer.nativeFilters = null;
-				this._titleTextRenderer.nativeFilters = this._filters;
-				this._iconAndTempTextRenderer.nativeFilters = null;
-				this._iconAndTempTextRenderer.nativeFilters = this._filters;
-				this._detail1TextRenderer.elementFormat = accentElementFormat;
-				this._detail2TextRenderer.elementFormat = accentElementFormat;
+				this._detail1Label.fontStyles = accentFontStyles;
+				this._detail2Label.fontStyles = accentFontStyles;
 				if(data.day)
 				{
-					this._titleTextRenderer.text = data.day;
-					this._detail2TextRenderer.text = data.low + DEGREES_SYMBOL;
-					this._tempTextElement.text = data.high + DEGREES_SYMBOL;
+					this._titleLabel.text = data.day;
+					this._detail2Label.text = data.low + DEGREES_SYMBOL;
+					this._tempLabel.text = data.high + DEGREES_SYMBOL;
 				}
 				else
 				{
-					this._titleTextRenderer.text = "Now";
-					this._detail2TextRenderer.text = null;
-					this._tempTextElement.text = data.temp + DEGREES_SYMBOL;
+					this._titleLabel.text = "Now";
+					this._detail2Label.text = null;
+					this._tempLabel.text = data.temp + DEGREES_SYMBOL;
 				}
-				this._iconAndTempTextRenderer.content = this._groupElement;
-				this._detail1TextRenderer.text = data.text;
+				this._detail1Label.text = data.text;
 			}
 			else
 			{
-				this._titleTextRenderer.text = null;
-				this._detail1TextRenderer.text = null;
-				this._iconAndTempTextRenderer.content = null;
-				this._detail2TextRenderer.text = null;
+				this._titleLabel.text = null;
+				this._detail1Label.text = null;
+				this._iconLabel.text = null;
+				this._tempLabel.text = null;
+				this._detail2Label.text = null;
 			}
 		}
 
@@ -351,25 +342,25 @@ package feathers.examples.weather.view.components
 			this._background.width = 0;
 			this._background.height = 0;
 
-			var layoutData:AnchorLayoutData = AnchorLayoutData(this._titleTextRenderer.layoutData);
+			var layoutData:AnchorLayoutData = AnchorLayoutData(this._titleLabel.layoutData);
 			layoutData.top = this._padding;
 			layoutData.right = this._padding;
 			layoutData.left = this._padding;
 
-			layoutData = AnchorLayoutData(this._detail1TextRenderer.layoutData);
-			layoutData.topAnchorDisplayObject = this._titleTextRenderer
+			layoutData = AnchorLayoutData(this._detail1Label.layoutData);
+			layoutData.topAnchorDisplayObject = this._titleLabel
 			layoutData.top = this._gap;
 			layoutData.right = this._padding;
 			layoutData.left = this._padding;
 
-			layoutData = AnchorLayoutData(this._detail2TextRenderer.layoutData);
+			layoutData = AnchorLayoutData(this._detail2Label.layoutData);
 			layoutData.bottom = this._padding;
 			layoutData.right = this._padding;
 
-			this._iconAndTempTextRenderer.validate();
-			layoutData = AnchorLayoutData(this._iconAndTempTextRenderer.layoutData);
+			this._iconAndTempGroup.validate();
+			layoutData = AnchorLayoutData(this._iconAndTempGroup.layoutData);
 			layoutData.horizontalCenter = 0;
-			layoutData.verticalCenter = this._iconAndTempTextRenderer.height / 4;
+			layoutData.verticalCenter = this._iconAndTempGroup.height / 4;
 		}
 
 		override protected function postLayout():void

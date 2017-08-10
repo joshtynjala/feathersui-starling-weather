@@ -7,10 +7,10 @@ package feathers.examples.weather.view.components
 	import feathers.controls.Panel;
 	import feathers.data.ListCollection;
 	import feathers.examples.weather.model.LocationItem;
+	import feathers.skins.IStyleProvider;
 
 	import starling.display.DisplayObject;
 	import starling.events.Event;
-	import feathers.skins.IStyleProvider;
 
 	public class ForecastView extends Panel
 	{
@@ -29,6 +29,7 @@ package feathers.examples.weather.view.components
 
 		public function ForecastView()
 		{
+			super();
 			this.headerFactory = customHeaderFactory;
 			this.customHeaderStyleName = CHILD_STYLE_NAME_HEADER;
 		}
