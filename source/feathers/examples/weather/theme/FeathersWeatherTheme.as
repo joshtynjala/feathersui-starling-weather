@@ -377,6 +377,8 @@ package feathers.examples.weather.theme
 			backgroundSkin.minWidth = this._gridSize;
 			view.backgroundSkin = backgroundSkin;
 
+			view.maxWidth = 4 * this._gridSize + 2 * this._eighthGridSize;
+
 			view.layout = new AnchorLayout();
 
 			view.customHeaderStyleName = THEME_STYLE_NAME_LOCATION_VIEW_HEADER;
@@ -408,8 +410,8 @@ package feathers.examples.weather.theme
 			var layoutData:AnchorLayoutData = new AnchorLayoutData();
 			layoutData.top = this._quarterGridSize;
 			layoutData.right = this._quarterGridSize;
-			layoutData.left = this._quarterGridSize;
 			layoutData.bottom = this._quarterGridSize;
+			layoutData.left = this._quarterGridSize;
 			label.layoutData = layoutData;
 		}
 

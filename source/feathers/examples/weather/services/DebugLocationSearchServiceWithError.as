@@ -19,7 +19,7 @@ package feathers.examples.weather.services
 	 */
 	public class DebugLocationSearchServiceWithError extends Actor implements ILocationSearchService
 	{
-		[Embed(source="location-error.json",mimeType="application/octet-stream")]
+		[Embed(source="yql-error.json",mimeType="application/octet-stream")]
 		private static const LOCATION_JSON:Class;
 
 		[Inject]
@@ -56,7 +56,7 @@ package feathers.examples.weather.services
 			try
 			{
 				var result:Object = JSON.parse(new LOCATION_JSON());
-				var locations:Vector.<LocationItem> = LocationItem.fromYahooGeoplanetJSON(result);
+				var locations:Vector.<LocationItem> = LocationItem.fromYahooGeoYQLJSON(result);
 				this.locationSearchModel.replaceResultLocations(locations);
 				this.dispatchWith(LocationSearchEventType.LOCATION_SEARCH_COMPLETE);
 			}

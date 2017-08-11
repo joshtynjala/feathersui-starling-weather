@@ -16,7 +16,8 @@ package feathers.examples.weather.services
 
 	public class ProductionWeatherService extends Actor implements IWeatherService
 	{
-		private static const BASE_URL:String = "http://weather.yahooapis.com/forecastrss?w=";
+		private static const URL_PREFIX:String = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(";
+		private static const URL_SUFFIX:String = ")&format=xml";
 
 		private var _loader:URLLoader;
 
@@ -37,7 +38,7 @@ package feathers.examples.weather.services
 			this._loader.addEventListener(Event.COMPLETE, loader_completeHandler);
 			this._loader.addEventListener(IOErrorEvent.IO_ERROR, loader_errorHandler);
 			this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loader_errorHandler);
-			this._loader.load(new URLRequest(BASE_URL + encodeURIComponent(woeid)));
+			this._loader.load(new URLRequest(URL_PREFIX + encodeURIComponent(woeid) + URL_SUFFIX));
 		}
 
 		private function loader_completeHandler(event:Event):void
@@ -50,7 +51,7 @@ package feathers.examples.weather.services
 			try
 			{
 				var xml:XML = new XML(resultText);
-				var forecasts:Vector.<ForecastItem> = ForecastItem.fromYahooWeatherRSS(xml);
+				var forecasts:Vector.<ForecastItem> = ForecastItem.fromYahooWeatherYQLXML(xml);
 				this.forecastModel.replaceForecasts(forecasts);
 				this.dispatchWith(ForecastEventType.FORECAST_COMPLETE);
 			}

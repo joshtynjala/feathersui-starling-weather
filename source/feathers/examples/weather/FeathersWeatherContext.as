@@ -26,6 +26,9 @@ package feathers.examples.weather
 	import org.robotlegs.starling.mvcs.Context;
 
 	import starling.display.DisplayObjectContainer;
+	import feathers.examples.weather.services.DebugWeatherServiceInvalid;
+	import feathers.examples.weather.services.DebugLocationSearchServiceWithError;
+	import feathers.examples.weather.services.DebugFavoriteLocationsServiceNoResults;
 
 	public class FeathersWeatherContext extends Context
 	{
@@ -53,18 +56,21 @@ package feathers.examples.weather
 			this.injector.mapSingleton(FavoriteLocationsModel);
 			this.injector.mapSingleton(ForecastModel);
 			this.injector.mapSingleton(LocationSearchModel);
-			if(CONFIG::API_KEY == "mock")
-			{
-				this.injector.mapSingletonOf(IWeatherService, DebugWeatherServiceValid);
-				this.injector.mapSingletonOf(ILocationSearchService, DebugLocationSearchServiceWithResults);
-				this.injector.mapSingletonOf(IFavoriteLocationsService, DebugFavoriteLocationsServiceWithResults);
-			}
-			else //production
-			{
-				this.injector.mapSingletonOf(IWeatherService, ProductionWeatherService);
-				this.injector.mapSingletonOf(ILocationSearchService, ProductionLocationSearchService);
-				this.injector.mapSingletonOf(IFavoriteLocationsService, ProductionFavoriteLocationsService);
-			}
+
+			//debug results
+			/*this.injector.mapSingletonOf(IWeatherService, DebugWeatherServiceValid);
+			this.injector.mapSingletonOf(ILocationSearchService, DebugLocationSearchServiceWithResults);
+			this.injector.mapSingletonOf(IFavoriteLocationsService, DebugFavoriteLocationsServiceWithResults);*/
+
+			//debug errors
+			/*this.injector.mapSingletonOf(IWeatherService, DebugWeatherServiceInvalid);
+			this.injector.mapSingletonOf(ILocationSearchService, DebugLocationSearchServiceWithError);
+			this.injector.mapSingletonOf(IFavoriteLocationsService, DebugFavoriteLocationsServiceNoResults);*/
+			
+			//production
+			this.injector.mapSingletonOf(IWeatherService, ProductionWeatherService);
+			this.injector.mapSingletonOf(ILocationSearchService, ProductionLocationSearchService);
+			this.injector.mapSingletonOf(IFavoriteLocationsService, ProductionFavoriteLocationsService);
 
 			this.mediatorMap.mapView(ForecastView, ForecastViewMediator);
 			this.mediatorMap.mapView(LocationView, LocationViewMediator);

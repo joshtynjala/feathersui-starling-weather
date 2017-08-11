@@ -16,7 +16,7 @@ package feathers.examples.weather.services
 	 */
 	public class DebugWeatherServiceValid extends Actor implements IWeatherService
 	{
-		[Embed(source="2502265.xml",mimeType="application/octet-stream")]
+		[Embed(source="sample-weather-result.xml",mimeType="application/octet-stream")]
 		private static const WEATHER_XML:Class;
 
 		[Inject]
@@ -32,7 +32,7 @@ package feathers.examples.weather.services
 			var xml:XML = XML(new WEATHER_XML());
 			try
 			{
-				var forecasts:Vector.<ForecastItem> = ForecastItem.fromYahooWeatherRSS(xml);
+				var forecasts:Vector.<ForecastItem> = ForecastItem.fromYahooWeatherYQLXML(xml);
 				this.forecastModel.replaceForecasts(forecasts);
 				this.dispatchWith(ForecastEventType.FORECAST_COMPLETE);
 			}

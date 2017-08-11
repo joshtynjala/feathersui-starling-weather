@@ -1,0 +1,15 @@
+{
+	"favorites":
+	[
+		{
+			"woeid": "2487956",
+			"name": "San Francisco",
+			"region": "California, United States"
+		},
+		{
+			"woeid": "2459115",
+			"name": "New York",
+			"region": "New York, United States"
+		}
+	]
+}

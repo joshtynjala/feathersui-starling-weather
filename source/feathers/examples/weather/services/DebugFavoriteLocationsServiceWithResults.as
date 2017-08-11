@@ -18,7 +18,7 @@ package feathers.examples.weather.services
 	 */
 	public class DebugFavoriteLocationsServiceWithResults extends Actor implements IFavoriteLocationsService
 	{
-		[Embed(source="favorite-locations.json",mimeType="application/octet-stream")]
+		[Embed(source="sample-favorite-locations.json",mimeType="application/octet-stream")]
 		private static const FAVORITE_LOCATIONS_JSON:Class;
 
 		public function DebugFavoriteLocationsServiceWithResults()

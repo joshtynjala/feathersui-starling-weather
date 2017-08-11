@@ -3,6 +3,9 @@ package feathers.examples.weather.model
 	public class ForecastItem
 	{
 		private static const yweather:Namespace = new Namespace(null, "http://xml.weather.yahoo.com/ns/rss/1.0");
+		private static const ERROR_ELEMENT:String = "error";
+		private static const DESCRIPTION_ELEMENT:String = "description";
+		private static const RESULTS_ELEMENT:String = "results";
 		private static const CHANNEL_ELEMENT:String = "channel";
 		private static const ITEM_ELEMENT:String = "item";
 		private static const CONDITION_ELEMENT:QName = new QName(yweather, "condition");
@@ -15,8 +18,13 @@ package feathers.examples.weather.model
 		private static const LOW_ATTRIBUTE:QName = new QName(yweather, "low");
 		private static const DAY_ATTRIBUTE:QName = new QName(yweather, "day");
 
-		public static function fromYahooWeatherRSS(rss:XML, result:Vector.<ForecastItem> = null):Vector.<ForecastItem>
+		public static function fromYahooWeatherYQLXML(rss:XML, result:Vector.<ForecastItem> = null):Vector.<ForecastItem>
 		{
+			if(rss.localName() === ERROR_ELEMENT)
+			{
+				var errorDescription:String = rss.elements(DESCRIPTION_ELEMENT);
+				throw new Error(errorDescription);
+			}
 			if(result)
 			{
 				result.length = 0;
@@ -25,7 +33,7 @@ package feathers.examples.weather.model
 			{
 				result = new <ForecastItem>[];
 			}
-			var xmlList:XMLList = rss.elements(CHANNEL_ELEMENT);
+			var xmlList:XMLList = rss.elements(RESULTS_ELEMENT).elements(CHANNEL_ELEMENT);
 			if(xmlList.length() == 0)
 			{
 				return result;

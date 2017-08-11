@@ -15,8 +15,6 @@
 	<fail unless="android.certificate.path"/>
 	<fail unless="android.certificate.password"/>
 
-	<fail unless="api.key"/>
-
 	<target name="build" depends="build-android,build-ios"/>
 
 	<target name="prepare">
@@ -27,7 +25,6 @@
 		<echo message="Building FeathersWeather.swf"/>
 		<java jar="${mxmlc}" dir="${basedir}" fork="true" failonerror="true">
 			<arg value="-load-config=${airmobile.config}"/>
-			<arg value="--define+=CONFIG::API_KEY,'${api.key}'"/>
 			<arg value="-source-path+=source"/>
 			<arg value="-library-path+=${library.root}"/>
 			<arg value="source/FeathersWeather.as"/>

@@ -1,9 +1,2 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<rss version="2.0">
-<channel>
-<title>Yahoo! Weather - Error</title>
-<description>Yahoo! Weather Error</description>
-<item><title>City not found</title><description>
-Invalid Input /forecastrss?w=asd
-</description></item></channel></rss>
-<!-- fe464.global.media.gq1.yahoo.com Tue Jan 28 22:56:27 PST 2014 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<error xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" yahoo:lang="en-US"><description>Query syntax error(s) [line 1:43 mismatched input 'in' expecting ISNOTNULL]</description></error>

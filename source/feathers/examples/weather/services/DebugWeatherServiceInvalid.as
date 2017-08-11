@@ -32,7 +32,7 @@ package feathers.examples.weather.services
 			var xml:XML = XML(new WEATHER_XML());
 			try
 			{
-				var forecasts:Vector.<ForecastItem> = ForecastItem.fromYahooWeatherRSS(xml);
+				var forecasts:Vector.<ForecastItem> = ForecastItem.fromYahooWeatherYQLXML(xml);
 				this.forecastModel.replaceForecasts(forecasts);
 				this.dispatchWith(ForecastEventType.FORECAST_COMPLETE);
 			}

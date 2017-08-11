@@ -9,7 +9,10 @@ package feathers.examples.weather.controller
 
 	public class FavoriteLocationsLoadCompleteCommand extends Command
 	{
-		private static const DEFAULT_LOCATION_ITEM:LocationItem = new LocationItem("Sunnyvale", "2502265", "California, United States");
+		private static const DEFAULT_LOCATION_ITEMS:Vector.<LocationItem> = new <LocationItem>[
+			new LocationItem("San Francisco", "2487956", "California, United States"),
+			new LocationItem("New York", "2459115", "New York, United States"),
+		];
 
 		[Inject]
 		public var forecastModel:ForecastModel;
@@ -28,8 +31,16 @@ package feathers.examples.weather.controller
 			else
 			{
 				//this will happen if the file was corrupt or doesn't exist yet
-				this.favoriteLocationsModel.addFavoriteLocation(DEFAULT_LOCATION_ITEM);
-				this.forecastModel.selectLocation(DEFAULT_LOCATION_ITEM);
+				var count:int = DEFAULT_LOCATION_ITEMS.length;
+				for(var i:int = 0; i < count; i++)
+				{
+					var item:LocationItem = DEFAULT_LOCATION_ITEMS[i];
+					this.favoriteLocationsModel.addFavoriteLocation(item);
+					if(i == 0)
+					{
+						this.forecastModel.selectLocation(item);
+					}
+				}
 			}
 		}
 	}

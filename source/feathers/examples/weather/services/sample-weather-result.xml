@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" yahoo:count="1" yahoo:created="2017-08-11T14:30:07Z" yahoo:lang="en-US">
+<results>
+<channel>
+<yweather:units xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" distance="mi" pressure="in" speed="mph" temperature="F"/>
+<title>Yahoo! Weather - Sunnyvale, CA, US</title>
+<link>http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/</link>
+<description>Yahoo! Weather for Sunnyvale, CA, US</description>
+<language>en-us</language>
+<lastBuildDate>Fri, 11 Aug 2017 07:30 AM PDT</lastBuildDate>
+<ttl>60</ttl>
+<yweather:location xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" city="Sunnyvale" country="United States" region=" CA"/>
+<yweather:wind xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" chill="63" direction="0" speed="4"/>
+<yweather:atmosphere xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" humidity="88" pressure="1006.0" rising="0" visibility="16.1"/>
+<yweather:astronomy xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" sunrise="6:21 am" sunset="8:5 pm"/>
+<image><title>Yahoo! Weather</title><width>142</width><height>18</height><link>http://weather.yahoo.com</link><url>http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif</url></image>
+<item>
+<title>Conditions for Sunnyvale, CA, US at 06:00 AM PDT</title>
+<geo:lat xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">37.371609</geo:lat>
+<geo:long xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">-122.038254</geo:long>
+<link>http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/</link>
+<pubDate>Fri, 11 Aug 2017 06:00 AM PDT</pubDate>
+<yweather:condition xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="27" date="Fri, 11 Aug 2017 06:00 AM PDT" temp="62" text="Mostly Cloudy"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="30" date="11 Aug 2017" day="Fri" high="77" low="62" text="Partly Cloudy"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="30" date="12 Aug 2017" day="Sat" high="76" low="61" text="Partly Cloudy"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="30" date="13 Aug 2017" day="Sun" high="76" low="59" text="Partly Cloudy"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="28" date="14 Aug 2017" day="Mon" high="74" low="63" text="Mostly Cloudy"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="30" date="15 Aug 2017" day="Tue" high="77" low="61" text="Partly Cloudy"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="34" date="16 Aug 2017" day="Wed" high="80" low="62" text="Mostly Sunny"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="34" date="17 Aug 2017" day="Thu" high="81" low="63" text="Mostly Sunny"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="34" date="18 Aug 2017" day="Fri" high="79" low="64" text="Mostly Sunny"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="34" date="19 Aug 2017" day="Sat" high="78" low="63" text="Mostly Sunny"/>
+<yweather:forecast xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" code="34" date="20 Aug 2017" day="Sun" high="75" low="62" text="Mostly Sunny"/>
+<description><![CDATA[&lt;img src="http://l.yimg.com/a/i/us/we/52/27.gif"/&gt;
+&lt;BR /&gt;
+&lt;b&gt;Current Conditions:&lt;/b&gt;
+&lt;BR /&gt;Mostly Cloudy
+&lt;BR /&gt;
+&lt;BR /&gt;
+&lt;b&gt;Forecast:&lt;/b&gt;
+&lt;BR /&gt; Fri - Partly Cloudy. High: 77Low: 62
+&lt;BR /&gt; Sat - Partly Cloudy. High: 76Low: 61
+&lt;BR /&gt; Sun - Partly Cloudy. High: 76Low: 59
+&lt;BR /&gt; Mon - Mostly Cloudy. High: 74Low: 63
+&lt;BR /&gt; Tue - Partly Cloudy. High: 77Low: 61
+&lt;BR /&gt;
+&lt;BR /&gt;
+&lt;a href="http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/"&gt;Full Forecast at Yahoo! Weather&lt;/a&gt;
+&lt;BR /&gt;
+&lt;BR /&gt;
+&lt;BR /&gt;
+]]></description>
+<guid isPermaLink="false"/>
+</item>
+</channel>
+</results>
+</query>
+<!-- total: 4 -->

@@ -4,17 +4,11 @@ package feathers.examples.weather.model
 	{
 		private static const ERROR_ID:String = "error";
 		private static const DESCRIPTION_ID:String = "description";
-		private static const DETAIL_ID:String = "detail";
+		private static const STATUS_ID:String = "status";
 
 		private static const NAME_ID:String = "name";
 		private static const STATE_ID:String = "admin1";
-		private static const STATE_ATTRS_ID:String = "admin1 attrs";
-		private static const STATE_ATTRS_TYPE_ID:String = "type";
-		private static const STATE_ATTRS_TYPE_STATE:String = "State";
 		private static const COUNTRY_ID:String = "country";
-		private static const PLACE_TYPE_NAME_ATTRS_ID:String = "placeTypeName attrs";
-		private static const PLACE_TYPE_NAME_CODE_ID:String = "code";
-		private static const PLACE_TYPE_CODE_TOWN:int = 7;
 		private static const WOEID_ID:String = "woeid";
 		private static const REGION_ID:String = "region";
 
@@ -42,14 +36,14 @@ package feathers.examples.weather.model
 			return result;
 		}
 
-		public static function fromYahooGeoplanetJSON(json:Object, result:Vector.<LocationItem> = null):Vector.<LocationItem>
+		public static function fromYahooGeoYQLJSON(json:Object, result:Vector.<LocationItem> = null):Vector.<LocationItem>
 		{
 			if(json.hasOwnProperty(ERROR_ID))
 			{
 				var jsonError:Object = json[ERROR_ID];
-				var error:Error = new Error(jsonError[DETAIL_ID]);
-				error.name = jsonError[DESCRIPTION_ID];
-				throw error;
+				var errorDescription:String = jsonError[DESCRIPTION_ID];
+				var errorStatus:String = jsonError[STATUS_ID];
+				throw new Error(errorDescription, errorStatus);
 			}
 			if(result)
 			{
@@ -59,25 +53,23 @@ package feathers.examples.weather.model
 			{
 				result = new <LocationItem>[];
 			}
-
-			var placesJSON:Array = json.places.place;
-			var count:int = placesJSON.length;
-			for(var i:int = 0; i < count; i++)
+			if(json.query.count > 0)
 			{
-				var placeJSON:Object = placesJSON[i];
-				if(placeJSON[PLACE_TYPE_NAME_ATTRS_ID][PLACE_TYPE_NAME_CODE_ID] != PLACE_TYPE_CODE_TOWN)
+				var placesJSON:Array = json.query.results.place;
+				var count:int = placesJSON.length;
+				for(var i:int = 0; i < count; i++)
 				{
-					continue;
+					var placeJSON:Object = placesJSON[i];
+					var name:String = placeJSON[NAME_ID];
+					var woeid:String = placeJSON[WOEID_ID];
+					var region:String = "";
+					if(STATE_ID in placeJSON)
+					{
+						region += placeJSON[STATE_ID] + ", ";
+					}
+					region += placeJSON[COUNTRY_ID];
+					result.push(new LocationItem(name, woeid, region));
 				}
-				var name:String = placeJSON[NAME_ID];
-				var woeid:String = placeJSON[WOEID_ID];
-				var region:String = "";
-				if(placeJSON[STATE_ATTRS_ID][STATE_ATTRS_TYPE_ID] == STATE_ATTRS_TYPE_STATE)
-				{
-					region += placeJSON[STATE_ID] + ", ";
-				}
-				region += placeJSON[COUNTRY_ID];
-				result.push(new LocationItem(name, woeid, region));
 			}
 
 			return result;

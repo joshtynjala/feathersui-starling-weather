@@ -1,0 +1,23 @@
+{
+	"query": {
+		"count": 2,
+		"created": "2017-08-11T15:08:42Z",
+		"lang": "en-US",
+		"results": {
+			"place": [
+				{
+					"name": "Result 1",
+					"country": "Country",
+					"admin1": "State",
+					"woeid": "1111111"
+				},
+				{
+					"name": "Result 2",
+					"country": "Country",
+					"admin1": "State",
+					"woeid": "2222222"
+				}
+			]
+	  }
+	}
+}

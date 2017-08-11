@@ -17,8 +17,8 @@ package feathers.examples.weather.services
 
 	public class ProductionLocationSearchService extends Actor implements ILocationSearchService
 	{
-		private static const BASE_URL_1:String = "http://where.yahooapis.com/v1/places.q('";
-		private static const BASE_URL_2:String = "');count=10?format=json&appid=";
+		private static const URL_PREFIX:String = "https://query.yahooapis.com/v1/public/yql?q=select%20woeid,name,country.content,admin1.content%20from%20geo.places%20where%20text=%27";
+		private static const URL_SUFFIX:String = "%27%20and%20placeTypeName.code=7&format=json";
 
 		private var _loader:URLLoader;
 
@@ -50,16 +50,12 @@ package feathers.examples.weather.services
 				throw new IllegalOperationError("Cannot search when a search is already active.")
 			}
 
-			//CONFIG::API_KEY is a conditional constant that defines the Yahoo! GeoPlanet API key.
-			//Get an API key from here: http://developer.yahoo.com/wsregapp/
-			var apiKey:String = CONFIG::API_KEY;
-
 			this._loader = new URLLoader();
 			this._loader.dataFormat = URLLoaderDataFormat.TEXT;
 			this._loader.addEventListener(Event.COMPLETE, loader_completeHandler);
 			this._loader.addEventListener(IOErrorEvent.IO_ERROR, loader_errorHandler);
 			this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, loader_errorHandler);
-			this._loader.load(new URLRequest(BASE_URL_1 + encodeURIComponent(query) + BASE_URL_2 + apiKey));
+			this._loader.load(new URLRequest(URL_PREFIX + encodeURIComponent(query) + URL_SUFFIX));
 		}
 
 		private function loader_completeHandler(event:Event):void
@@ -72,7 +68,7 @@ package feathers.examples.weather.services
 			try
 			{
 				var result:Object = JSON.parse(resultText);
-				var locations:Vector.<LocationItem> = LocationItem.fromYahooGeoplanetJSON(result);
+				var locations:Vector.<LocationItem> = LocationItem.fromYahooGeoYQLJSON(result);
 				this.locationSearchModel.replaceResultLocations(locations);
 				this.dispatchWith(LocationSearchEventType.LOCATION_SEARCH_COMPLETE);
 			}
