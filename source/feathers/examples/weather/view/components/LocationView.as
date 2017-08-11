@@ -335,13 +335,15 @@ package feathers.examples.weather.view.components
 			}
 			else
 			{
+				this._searchQuery = newQuery;
 				if(this._savedDelayedCall)
 				{
 					this._savedDelayedCall = this._savedDelayedCall.reset(updateSearch, SEARCH_DELAY)
 				}
 				else
 				{
-					this._savedDelayedCall = Starling.juggler.delayCall(updateSearch, SEARCH_DELAY) as DelayedCall;
+					this._savedDelayedCall = new DelayedCall(updateSearch, SEARCH_DELAY);
+					Starling.juggler.add(this._savedDelayedCall);
 				}
 			}
 		}
