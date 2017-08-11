@@ -55,24 +55,38 @@ package feathers.examples.weather.model
 			}
 			if(json.query.count > 0)
 			{
-				var placesJSON:Array = json.query.results.place;
-				var count:int = placesJSON.length;
-				for(var i:int = 0; i < count; i++)
+				var placesJSON:Object = json.query.results.place;
+				if(placesJSON is Array)
 				{
-					var placeJSON:Object = placesJSON[i];
-					var name:String = placeJSON[NAME_ID];
-					var woeid:String = placeJSON[WOEID_ID];
-					var region:String = "";
-					if(STATE_ID in placeJSON)
+					var count:int = placesJSON.length;
+					for(var i:int = 0; i < count; i++)
 					{
-						region += placeJSON[STATE_ID] + ", ";
+						var placeJSON:Object = placesJSON[i];
+						var item:LocationItem = parsePlace(placesJSON[i]);
+						result.push(item);
 					}
-					region += placeJSON[COUNTRY_ID];
-					result.push(new LocationItem(name, woeid, region));
+				}
+				else
+				{
+					item = parsePlace(placesJSON);
+					result.push(item);
 				}
 			}
 
 			return result;
+		}
+
+		private static function parsePlace(json:Object):LocationItem
+		{
+			var name:String = json[NAME_ID];
+			var woeid:String = json[WOEID_ID];
+			var region:String = "";
+			if(STATE_ID in json)
+			{
+				region += json[STATE_ID] + ", ";
+			}
+			region += json[COUNTRY_ID];
+			return new LocationItem(name, woeid, region)
 		}
 
 		public function LocationItem(name:String, woeid:String, region:String)
