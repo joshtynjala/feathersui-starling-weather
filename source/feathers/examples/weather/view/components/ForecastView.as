@@ -2,12 +2,17 @@ package feathers.examples.weather.view.components
 {
 	import feathers.controls.Button;
 	import feathers.controls.Header;
+	import feathers.controls.ImageLoader;
 	import feathers.controls.Label;
 	import feathers.controls.List;
 	import feathers.controls.Panel;
 	import feathers.data.ListCollection;
 	import feathers.examples.weather.model.LocationItem;
 	import feathers.skins.IStyleProvider;
+	import feathers.utils.touch.TapToTrigger;
+
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 
 	import starling.display.DisplayObject;
 	import starling.events.Event;
@@ -42,7 +47,7 @@ package feathers.examples.weather.view.components
 		private var _locationButton:Button;
 		private var _forecastList:List;
 		private var _statusLabel:Label;
-		private var _yahooLabel:Label;
+		private var _yahooLogo:ImageLoader;
 
 		private var _location:LocationItem;
 
@@ -116,9 +121,11 @@ package feathers.examples.weather.view.components
 			this._locationButton.addEventListener(Event.TRIGGERED, locationButton_triggeredHandler);
 
 			//this will be added as a child of the header later
-			this._yahooLabel = new Label();
-			this._yahooLabel.styleNameList.add(Label.ALTERNATE_STYLE_NAME_DETAIL);
-			this._yahooLabel.text = "Powered by Yahoo! Weather";
+			this._yahooLogo = new ImageLoader();
+			this._yahooLogo.source = "https://poweredby.yahoo.com/white_retina.png";
+			this._yahooLogo.scaleFactor = 2;
+			new TapToTrigger(this._yahooLogo);
+			this._yahooLogo.addEventListener(Event.TRIGGERED, yahooLogo_triggeredHandler);
 		}
 
 		override protected function draw():void
@@ -175,7 +182,7 @@ package feathers.examples.weather.view.components
 			];
 			header.rightItems = new <DisplayObject>
 			[
-				this._yahooLabel
+				this._yahooLogo
 			];
 			return header;
 		}
@@ -183,6 +190,11 @@ package feathers.examples.weather.view.components
 		private function locationButton_triggeredHandler(event:Event):void
 		{
 			this.dispatchEventWith(EVENT_OPEN_MENU);
+		}
+
+		private function yahooLogo_triggeredHandler(event:Event):void
+		{
+			navigateToURL(new URLRequest("https://www.yahoo.com/?ilc=401"), "_blank");
 		}
 
 	}
